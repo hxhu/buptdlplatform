@@ -1,0 +1,7 @@
+spring:
+  # 节点1的标签
+  profiles:
+    active: dev
+  # 服务名保持一致
+  application:
+    name: eureka-ha

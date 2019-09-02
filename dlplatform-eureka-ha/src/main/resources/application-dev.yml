@@ -1,0 +1,24 @@
+server:
+  port: 8771
+
+# 配置Eureka Server 信息
+eureka:
+  client:
+    # 不进行注册（当服务注册中心是单点而非高可用时的配置方式）
+    registerWithEureka: false
+    # 不获取注册信息（当服务注册中心是单点而非高可用时的配置方式）
+    fetchRegistry: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/
+  # 自定义实例编号
+  instance:
+    # 优先使用IP地址方式进行注册服务
+    prefer-ip-address: true
+    # 配置使用指定IP
+    #ip-address: 127.0.0.1
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 配置使用主机名注册服务
+    #hostname: peer1
+
+#logging:
+#  config: classpath:logback-dev.xml
