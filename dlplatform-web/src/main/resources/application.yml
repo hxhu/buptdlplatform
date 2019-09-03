@@ -1,0 +1,55 @@
+server:
+  port: 18080
+  servlet:
+      context-path: /dlplatform/api
+
+spring:
+  profiles:
+    active: dev
+  application:
+    # 服务名，即serviceId
+    name: service-feign-web-dlplatform
+  sleuth:
+      web:
+        client:
+          enabled: true
+      sampler:
+        probability: 1.0 # 将采样比例设置为 1.0，也就是全部都需要。默认是 0.1
+  zipkin:
+      enabled: true
+      sender:
+        type: web
+      base-url: http://localhost:9411/ # 指定了 Zipkin 服务器的地址
+feign:
+  hystrix:
+    enabled: true #开启熔断器
+
+  # 配置httpclient线程池
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        #timeout:
+          #enabled: false
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+
+management:
+ endpoints:
+   web:
+     exposure:
+        include: "*"
+ endpoint:
+   health:
+     show-details: always
+   shutdown:
+     enabled: false # 可以关闭制定的端点
