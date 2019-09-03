@@ -1,3 +1,4 @@
+swagger.show: true
 # 服务注册与发现相关配置
 eureka:
   #自定义实例编号
