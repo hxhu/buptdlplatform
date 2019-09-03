@@ -1,0 +1,36 @@
+server:
+  port: 18800
+
+spring:
+  profiles:
+    active: dev
+  http:
+    encoding:
+      force: true
+  activiti:
+    check-process-definitions: false
+  # 服务名称，即serviceId
+  application:
+      name: service-producer-dlplatform
+  sleuth:
+      web:
+        client:
+          enabled: true
+      sampler:
+          probability: 1.0 # 将采样比例设置为 1.0，也就是全部都需要。默认是 0.1
+  zipkin:
+      enabled: true
+      sender:
+        type: web
+      base-url: http://localhost:9411/ # 指定了 Zipkin 服务器的地址
+
+management:
+ endpoints:
+   web:
+     exposure:
+        include: "*"
+ endpoint:
+   health:
+     show-details: always
+   shutdown:
+     enabled: false # 可以关闭制定的端点

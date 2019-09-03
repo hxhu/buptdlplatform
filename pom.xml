@@ -21,6 +21,7 @@
         <module>dlplatform-common</module>
         <module>dlplatform-service</module>
         <module>dlplatform-web</module>
+        <module>dlplatform-contract</module>
     </modules>
 
     <properties>

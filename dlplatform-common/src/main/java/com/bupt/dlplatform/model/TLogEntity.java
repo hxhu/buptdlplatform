@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
  * @since 2019-09-02
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("t_log")
 public class TLogEntity {
