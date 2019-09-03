@@ -20,6 +20,7 @@
         <module>dlplatform-eureka-ha</module>
         <module>dlplatform-common</module>
         <module>dlplatform-service</module>
+        <module>dlplatform-web</module>
     </modules>
 
     <properties>
