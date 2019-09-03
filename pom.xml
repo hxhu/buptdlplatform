@@ -19,6 +19,7 @@
     <modules>
         <module>dlplatform-eureka-ha</module>
         <module>dlplatform-common</module>
+        <module>dlplatform-service</module>
     </modules>
 
     <properties>

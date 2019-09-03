@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dlplatform.mapper.TAnalyseResultRepository">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bupt.dlplatform.model.TAnalyseResultEntity">
+    <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="analyse_id" property="analyseId" />
+        <result column="analyse_name" property="analyseName" />
+        <result column="analyse_time" property="analyseTime" />
+        <result column="analyse_type" property="analyseType" />
+        <result column="analyse_location" property="analyseLocation" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time, update_time, analyse_id, analyse_name, analyse_time, analyse_type, analyse_location
+    </sql>
+
+</mapper>
