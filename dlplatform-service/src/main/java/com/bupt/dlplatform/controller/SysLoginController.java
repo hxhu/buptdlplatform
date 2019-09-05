@@ -14,7 +14,7 @@ public class SysLoginController {
    @Autowired
    SysLoginInfoService sysLoginInfoService;
 
-   @PostMapping("/dlplatform/Login")
+   @PostMapping("/dlplatform/login")
    public ResponseVO mobileLogin(@RequestBody @Validated LoginInputVO request){
        return sysLoginInfoService.mobileLogin(request);
 

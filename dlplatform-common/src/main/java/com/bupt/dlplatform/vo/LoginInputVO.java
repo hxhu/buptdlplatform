@@ -15,8 +15,7 @@ public class LoginInputVO {
     private String cellPhone;
     @NotNull(message = "密码不能为空")
     private String password;
-    private String roundCode;
-    private String encryptedCode;
-    private int retryTimes;
+    @NotNull(message = "用户类型不能为空")
+    private String userType;
     private Date createdTime;
 }

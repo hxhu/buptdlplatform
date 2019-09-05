@@ -29,13 +29,17 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
 
             String phoneNo = request.getCellPhone();
             String password = request.getPassword();
+            String userType = request.getUserType();
 
             List<TUserEntity> list = tUserRepository.selectList
-                    (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo).eq(TUserEntity::getUserType, "Administrator").eq(TUserEntity::getPassword,password));
+                    (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo).eq(TUserEntity::getUserType, userType).eq(TUserEntity::getPassword,password));
             if (CollectionUtils.isEmpty(list)) {
                 responseVO.setCode(ResponseCode.AUTH_USER_NULL.value());
-                responseVO.setMsg("未找到该员工信息，请在企业中录入!");
+                responseVO.setMsg("未找到信息，请用户注册!");
+                return responseVO;
             }
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
             return responseVO;
         } catch (Exception e) {
             log.error("LoginUsersServiceImpl 异常", e);
