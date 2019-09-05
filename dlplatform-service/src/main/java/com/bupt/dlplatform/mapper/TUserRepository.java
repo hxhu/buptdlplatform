@@ -2,6 +2,7 @@ package com.bupt.dlplatform.mapper;
 
 import com.bupt.dlplatform.model.TUserEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author zhongling
  * @since 2019-09-02
  */
+
+@Repository
 public interface TUserRepository extends BaseMapper<TUserEntity> {
 
 }

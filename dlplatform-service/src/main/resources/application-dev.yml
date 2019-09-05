@@ -1,3 +1,17 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://playwolf.mysql.rds.aliyuncs.com:3306/dlplatform?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false
+    username: dlplatform_app
+    password: 1234asdf!
+
+    driver-class-name: com.mysql.jdbc.Driver
+    hikari:
+      pool-name: pool-vscloud
+      connectionTestQuery: SELECT 1
+      maximum-pool-size: 50
+      minimum-idle: 10
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   #实体扫描,多个package用逗号或者分号分隔
