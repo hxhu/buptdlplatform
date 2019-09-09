@@ -1,7 +1,5 @@
 package com.bupt.dlplatform.controller;
 
-
-import com.bupt.dlplatform.config.SecretKeyConfig;
 import com.bupt.dlplatform.consumer.UserLoginApi;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.model.TUserEntity;
@@ -10,6 +8,8 @@ import com.bupt.dlplatform.util.TokenUtil;
 import com.bupt.dlplatform.util.ValidationUtil;
 import com.bupt.dlplatform.vo.LoginInputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -25,11 +25,13 @@ import static com.bupt.dlplatform.config.SecretKeyConfig.secretKeySave;
 
 @RestController
 @Slf4j
+@Api
 public class LoginController {
     @Resource
     private UserLoginApi userLoginApi;
 
 
+    @ApiOperation("注册用户")
     @RequestMapping(value = "/dlplatform/login",method = RequestMethod.POST)
     public ResponseVO mobileLogin(@RequestBody @Validated LoginInputVO loginInputVO, HttpServletResponse response){
         ResponseVO<String> responseVO = new ResponseVO<>(ResponseCode.PARAM_INVALID);

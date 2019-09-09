@@ -28,7 +28,7 @@ import java.util.Set;
 @Configuration
 public class AuthenticationFilter implements Filter {
     private static final Set<String> ALLOWED_PATHS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("/dlplatform/login", "/dlplatform/register")));
+            Arrays.asList("/dlplatform/login", "/dlplatform/register","/v2/api-docs")));
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
