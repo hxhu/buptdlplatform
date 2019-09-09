@@ -7,6 +7,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class SecretKeyConfig {
-    public static String  encrypt_decrypt_key=null;//全局变量：kms接口返回密钥
+    private static final String SECRET = "71309bf6c811cc3ef4721321702c130d";
+
+    public static String secretKeySave(){
+        String secretKey = new String();
+        secretKey= SECRET;
+        return secretKey;
+    }
 
 }

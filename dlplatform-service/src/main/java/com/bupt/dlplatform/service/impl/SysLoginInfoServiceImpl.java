@@ -38,8 +38,17 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
                 responseVO.setMsg("未找到信息，请用户注册!");
                 return responseVO;
             }
+            String userName = list.get(0).getUserName();
+            TUserEntity returnData = new TUserEntity();
+            returnData.setUserName(userName);
+            returnData.setPhoneNumber(phoneNo);
+            //returnData.setPassword(password);
+            returnData.setUserType(userType);
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(returnData);
+
             return responseVO;
         } catch (Exception e) {
             log.error("LoginUsersServiceImpl 异常", e);
