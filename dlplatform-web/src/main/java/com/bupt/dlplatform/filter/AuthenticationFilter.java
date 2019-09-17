@@ -64,8 +64,6 @@ public class AuthenticationFilter implements Filter {
                         if (!tokenExpired) {
                             needContinue = false;
                             tokenErrorResponse(servletResponse);
-                        }else {
-                            httpServletRequest.se
                         }
                     }
                 }
