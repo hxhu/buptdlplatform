@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.vo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value = "用户登录输入")
 public class LoginInputVO {
     @NotNull(message = "手机号不能为空")
     private String cellPhone;

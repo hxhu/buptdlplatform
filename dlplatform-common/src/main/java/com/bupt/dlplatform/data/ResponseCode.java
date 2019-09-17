@@ -14,14 +14,22 @@ public enum ResponseCode {
     UNKNOWN_EXCEPTION(505, "系统异常"),
     SYSTEM_EXCEPTION(9000,"系统异常"),
     VERIFICATION_CODE_FAILURE(6001,"验证码失效"),
+
+    //登陆码
     AUTH_USER_NULL(4006,"人员信息获取失败"),
+    AUTH_USER_ERROR(4005,"身份证验证失败"),
+
+    //注册
     AUTH_USER_EXIT(4007,"人员已注册"),
+    INFO_NOT_FULL(4008,"信息填写不完整"),
+
+
     THIRD_PARTY_EXCEPTION(3000,"第三方接口异常"),
     VERIFICATION_CODE_EXCEEDING(6004,"验证次数超过上限"),
     VERIFICATION_CODE_ERROR(6002,"验证码错误"),
-    AUTH_INVALID_ERROR(4005,"身份验证失败"),
-    USER_NOT_EXIST(6003,"用户不存在"),
-    INFO_NOT_FULL(4008,"信息填写不完整"),
+    //AUTH_INVALID_ERROR(4005,"身份验证失败"),
+
+
     //==========业务状态码5500开始,各自约束错误码段=============//
     OPERATE_ERROR(5500, "操作失败"),
     INVALID_PARAM(5002,"输入参数异常"),

@@ -28,10 +28,10 @@ public class SysRegisterInfoServiceImpl implements SysRegisterInfoService {
             String userName = request.getUserName();
             String phoneNo = request.getCellPhone();
             String password = request.getPassword();
-            String userType = "User";
+            String userType = "user";
             /*判断信息填写是否完整*/
             if(userName.isEmpty() || phoneNo.isEmpty() || password.isEmpty()){
-                responseVO.setCode(ResponseCode.INFO_NOT_FULL.value());// 4008
+                responseVO.setCode(ResponseCode.INFO_NOT_FULL.value());
                 responseVO.setMsg("信息填写不完整，请填写未填写部分");
                 return responseVO;
             }
@@ -39,7 +39,7 @@ public class SysRegisterInfoServiceImpl implements SysRegisterInfoService {
             List<TUserEntity> list = tUserRepository.selectList
                     (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo));
             if (!CollectionUtils.isEmpty(list)) {
-                responseVO.setCode(ResponseCode.AUTH_USER_EXIT.value()); //6003
+                responseVO.setCode(ResponseCode.AUTH_USER_EXIT.value());
                 responseVO.setMsg("手机号已注册，请直接登陆!");
                 return responseVO;
             }else {

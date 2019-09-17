@@ -29,27 +29,40 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
 
             String phoneNo = request.getCellPhone();
             String password = request.getPassword();
-            String userType = request.getUserType();
+            String userType_data = request.getUserType();
+            String userType = new String();
+            if(Integer.parseInt(userType_data)==1) {
+                userType="administrator";
+            }
+            else if (Integer.parseInt(userType_data)==2){
+                userType="user";
+            }
 
             List<TUserEntity> list = tUserRepository.selectList
-                    (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo).eq(TUserEntity::getUserType, userType).eq(TUserEntity::getPassword,password));
+                    (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo));
+
             if (CollectionUtils.isEmpty(list)) {
+                //判断手机号是否存在
                 responseVO.setCode(ResponseCode.AUTH_USER_NULL.value());
                 responseVO.setMsg("未找到信息，请用户注册!");
                 return responseVO;
+            }else if(!list.get(0).getPassword().equals(password)  || !list.get(0).getUserType().equals(userType)){
+                //判断密码或者用户类型是否错误
+                responseVO.setCode(ResponseCode.AUTH_USER_ERROR.value());
+                responseVO.setMsg("密码或者用户类型错误，请重新输入");
+                return responseVO;
+            }else {
+                String userName = list.get(0).getUserName();
+                TUserEntity returnData = new TUserEntity();
+                returnData.setUserName(userName);
+                returnData.setPhoneNumber(phoneNo);
+                //returnData.setPassword(password);
+                // returnData.setUserType(userType);
+                responseVO.setCode(ResponseCode.OK.value());
+                responseVO.setMsg(ResponseCode.OK.getDescription());
+                responseVO.setData(returnData);
+                return responseVO;
             }
-            String userName = list.get(0).getUserName();
-            TUserEntity returnData = new TUserEntity();
-            returnData.setUserName(userName);
-            returnData.setPhoneNumber(phoneNo);
-            //returnData.setPassword(password);
-            returnData.setUserType(userType);
-
-            responseVO.setCode(ResponseCode.OK.value());
-            responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData(returnData);
-
-            return responseVO;
         } catch (Exception e) {
             log.error("LoginUsersServiceImpl 异常", e);
             return responseVO;

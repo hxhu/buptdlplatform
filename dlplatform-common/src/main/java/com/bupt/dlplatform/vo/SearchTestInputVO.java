@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.vo;
 
+
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -11,15 +12,9 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "用户注册输入")
-public class RegisterInputVO {
-    @NotNull(message = "用户名不能为空")
-    private String userName;
+@ApiModel(value = "用户查询模型测试记录")
+public class SearchTestInputVO {
     @NotNull(message = "手机号不能为空")
     private String cellPhone;
-    @NotNull(message = "密码不能为空")
-    private String password;
-    //@NotNull(message = "用户类型不能为空")
-    //private String userType;
     private Date createdTime;
 }

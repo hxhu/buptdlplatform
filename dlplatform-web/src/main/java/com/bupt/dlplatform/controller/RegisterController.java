@@ -50,7 +50,7 @@ public class RegisterController {
         }catch (Exception e){
             responseVO.setCode(ResponseCode.SYSTEM_EXCEPTION.value());
             responseVO.setMsg(ResponseCode.SYSTEM_EXCEPTION.getDescription());
-            log.error("UserLoginController ---> MobilePhoneLogin 生成token异常！", e);
+            log.error("UserRegisterController ---> UserRegister异常！", e);
         }
         return responseVO;
 
