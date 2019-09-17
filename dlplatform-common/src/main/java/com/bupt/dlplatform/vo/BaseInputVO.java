@@ -3,8 +3,6 @@ package com.bupt.dlplatform.vo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * @author LeoLv
@@ -16,8 +14,5 @@ import java.util.Date;
 public class BaseInputVO {
 
     private String cellPhone;
-    private String password;
     private String userType;
-    private Date createdTime;
-
 }
