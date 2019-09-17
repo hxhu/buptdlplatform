@@ -12,7 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+
 import java.util.List;
 
 @Slf4j
@@ -53,9 +53,11 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
                 return responseVO;
             }else {
                 String userName = list.get(0).getUserName();
+                String userId =list.get(0).getUserId();
                 TUserEntity returnData = new TUserEntity();
                 returnData.setUserName(userName);
                 returnData.setPhoneNumber(phoneNo);
+                returnData.setUserId(userId);
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
                 responseVO.setData(returnData);

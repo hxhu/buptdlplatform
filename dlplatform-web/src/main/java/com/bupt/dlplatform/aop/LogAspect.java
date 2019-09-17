@@ -51,6 +51,7 @@ public class LogAspect {
                         BaseInputVO paramVO = (BaseInputVO) argItem;
                         paramVO.setCellPhone(tokenEntity.getCellPhone());
                         paramVO.setUserType(tokenEntity.getUserType());
+                        paramVO.setUserId(tokenEntity.getUserId());
                     }
                 }
             }

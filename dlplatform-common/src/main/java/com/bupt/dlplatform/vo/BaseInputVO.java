@@ -15,4 +15,5 @@ public class BaseInputVO {
 
     private String cellPhone;
     private String userType;
+    private String userId;
 }

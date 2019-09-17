@@ -21,4 +21,9 @@ public class TkGenerateParameter {
     @ApiModelProperty("用户角色类型")
     public String userType;
 
+    @ApiModelProperty("用户id")
+    public String userId;
+
+
+
 }

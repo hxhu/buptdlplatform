@@ -53,7 +53,7 @@ public class LoginController {
                     responseVO.setMsg(ResponseCode.AUTH_TOKEN_INVALID.getDescription());
                     return responseVO;
                 }
-                response.setHeader("access-token",token);
+                response.setHeader("Access-token",token);
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
             }else {
@@ -74,6 +74,7 @@ public class LoginController {
         tk.setCellPhone(tUserEntity.getPhoneNumber());
         tk.setUserName(tUserEntity.getUserName());
         tk.setUserType(tUserEntity.getUserType());
+        tk.setUserId(tUserEntity.getUserId());
         return TokenUtil.generateToken(tk,secretKey);
     }
 }

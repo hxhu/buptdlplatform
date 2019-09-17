@@ -34,7 +34,7 @@ public class CorsConfig {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addExposedHeader("access-token");
+        corsConfiguration.addExposedHeader("Access-token");
         return corsConfiguration;
     }
 

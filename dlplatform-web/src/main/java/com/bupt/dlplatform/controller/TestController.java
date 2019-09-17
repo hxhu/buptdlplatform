@@ -22,6 +22,7 @@ public class TestController {
 
     @RequestMapping(value = "/test", method = RequestMethod.POST)
     public ResponseVO test(BaseInputVO baseInputVO){
+
         return testConsumer.test();
     }
 }

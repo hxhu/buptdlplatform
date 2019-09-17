@@ -3,6 +3,7 @@ package com.bupt.dlplatform.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bupt.dlplatform.model.TTrainsetEntity;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -12,6 +13,7 @@ import com.bupt.dlplatform.model.TTrainsetEntity;
  * @author zhongling
  * @since 2019-09-02
  */
+@Repository
 public interface TTrainsetRepository extends BaseMapper<TTrainsetEntity> {
 
 }

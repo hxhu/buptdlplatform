@@ -23,6 +23,7 @@ public class TokenUtil {
     private static final String CELL_PHONE = "cellPhone";
     private static final String USER_NAME = "userName";
     private static final String USER_TYPE = "userType";
+    private static final String USER_ID="userId";
     private static final String SECRET = "71309bf6c811cc3ef4721321702c130d";
 
     /**
@@ -73,6 +74,7 @@ public class TokenUtil {
         claims.put(CELL_PHONE, info.getCellPhone());
         claims.put(USER_NAME, info.getUserName());
         claims.put(USER_TYPE, info.getUserType());
+        claims.put(USER_ID,info.getUserId());
         return generateToken(claims,secretKey);
     }
 
@@ -102,6 +104,7 @@ public class TokenUtil {
                 obj.setUserName(getString(claims.get(USER_NAME)));
                 obj.setCellPhone(getString(claims.get(CELL_PHONE)));
                 obj.setUserType(getString(claims.get(USER_TYPE)));
+                obj.setUserId(getString(claims.get(USER_ID)));
             }
         } catch (Exception e) {
             log.error("token is error,token:{}", token, e);
@@ -159,15 +162,16 @@ public class TokenUtil {
 
 
     public static void main(String[] args) {
-        TkGenerateParameter info = new TkGenerateParameter();
-        info.setUserName("admin");
-        info.setCellPhone("18811707992");
-        info.setUserType("administrator");
-        System.out.println(generateToken(info,"71309bf6c811cc3ef4721321702c130d"));
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6ImFkbWluaXN0cmF0b3IiLCJ1c2VyTmFtZSI6ImFkbWluIiwiZXhwIjoxNTY4MDA0ODg3LCJpYXQiOjE1Njc5OTc2ODc0MTUsImNlbGxQaG9uZSI6IjE4ODExNzA3OTkyIn0.SVYIplhadq4pivte7QTSoOsGpByiUlpbm1HpNIeaGV8";
+//        TkGenerateParameter info = new TkGenerateParameter();
+//        info.setUserName("admin");
+//        info.setCellPhone("18811707992");
+//        info.setUserType("administrator");
+//        System.out.println(generateToken(info,"71309bf6c811cc3ef4721321702c130d"));
+        String token = "eyJ1c2VyVHlwZSI6bnVsbCwidXNlck5hbWUiOiJsaW4wMiIsImV4cCI6MTU2ODcxNzcxMSwiaWF0IjoxNTY4NzEwNTExNzAzLCJ1c2VySWQiOm51bGwsImNlbGxQaG9uZSI6IjEzMTY0Mjk0MzY4In0";
         TkGenerateParameter info1 = getEntity(token,"71309bf6c811cc3ef4721321702c130d");
         System.out.println(info1.getCellPhone());
         System.out.println(info1.getUserName());
         System.out.println(info1.getUserType());
+        System.out.println(info1.getUserId());
     }
 }

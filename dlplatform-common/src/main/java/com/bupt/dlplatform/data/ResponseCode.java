@@ -38,7 +38,10 @@ public enum ResponseCode {
     AUTH_TOKEN_MISSING(4001, "token缺失"),
     AUTH_TOKEN_INVALID(4002, "token Fail"),
     AUTH_ACCESS_DENIED(4003, "没有权限"),
-    JSON_ERROR(5001,"JSON操作异常");
+    JSON_ERROR(5001,"JSON操作异常"),
+
+    RECORD_NULL(5510,"没有数据记录");
+
 
     private final int value;
     private final String description;
