@@ -56,8 +56,6 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
                 TUserEntity returnData = new TUserEntity();
                 returnData.setUserName(userName);
                 returnData.setPhoneNumber(phoneNo);
-                //returnData.setPassword(password);
-                // returnData.setUserType(userType);
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
                 responseVO.setData(returnData);

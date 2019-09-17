@@ -56,7 +56,7 @@ public class LogAspect {
             }
         }
         log.info("【操作日志】【请求方法】:{}", joinPoint.getSignature());
-        log.info("【操作日志】【输入参数】:{}", Serializer.serialize(joinPoint.getArgs()));
+     //   log.info("【操作日志】【输入参数】:{}", Serializer.serialize(joinPoint.getArgs()));
     }
 
     @AfterReturning(returning = "obj", pointcut = "expenseController()")
@@ -82,28 +82,13 @@ public class LogAspect {
         /**
          * 将token置于响应头的Access-token中
          */
-        ///TODO:上线后删除
-//        String path =  httpServletRequest.getServletPath();
-//        if(path.equals("/v1/auth/testToken"))
-//        {
-//            TkGenerateParameter para = new TkGenerateParameter();
-//            para.setCorpId("yuewen");
-//            para.setEmployeeId("v_braveliu");
-//            para.setName("刘勇");
-//            para.setRoleId("1300");
-//            token = TokenUtil.generateToken(para,SecretKeyConfig.encrypt_decrypt_key);
-//        }
-        ///S
+
         HttpServletResponse httpServletResponse = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         String resToken = httpServletResponse.getHeader("Access-token");
         if(StringUtils.isBlank(resToken)) {
             httpServletResponse.addHeader("Access-Control-Expose-Headers", "Access-token");
             httpServletResponse.addHeader("Access-token", token);
         }
-
-        log.info("【操作日志】【请求方法】:{}", joinPoint.getSignature());
-        log.info("【操作日志】【输入参数】:{}", Serializer.serialize(joinPoint.getArgs()));
-        log.info("【操作日志】【返回参数】:{}", Serializer.serialize(obj));
     }
 
     @AfterThrowing(throwing = "ex", pointcut = "expenseController()")
