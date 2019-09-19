@@ -15,6 +15,7 @@ public class SearchTestController {
     @Autowired
     SearchTestInfoService searchTestInfoService;
 
+    //查询测试记录
     @PostMapping("/dlplatform/serchTestRecord")
     public ResponseVO testRecord(@RequestBody @Validated SearchTestInputVO request){
         return  searchTestInfoService.testRecord(request);
