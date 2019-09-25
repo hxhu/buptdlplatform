@@ -54,3 +54,8 @@ eureka:
     # 服务注册地址
     serviceUrl:
       defaultZone: http://localhost:8771/eureka/
+
+ftp:
+  host: 10.112.140.83
+  username: uftp
+  password: 123456

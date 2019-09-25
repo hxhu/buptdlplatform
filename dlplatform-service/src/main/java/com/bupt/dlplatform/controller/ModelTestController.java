@@ -18,6 +18,6 @@ public class ModelTestController {
     @PostMapping("/dlplatform/searchTestRecord")
     public ResponseVO searchTestRecord(@RequestBody @Validated SearchTestInputVO request){
         return  modelTestInfoService.testRecord(request);
-
     }
+
 }
