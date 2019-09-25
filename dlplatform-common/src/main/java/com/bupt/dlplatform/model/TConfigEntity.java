@@ -25,7 +25,7 @@ public class TConfigEntity  {
 
     private Date updateTime;
 
-    private Integer configId;
+    private String configId;
 
     private String configName;
 

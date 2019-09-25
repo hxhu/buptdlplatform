@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.mapper.TTestRecordRepository;
 import com.bupt.dlplatform.model.TTestRecordEntity;
-import com.bupt.dlplatform.service.SearchTestInfoService;
+import com.bupt.dlplatform.service.ModelTestInfoService;
 import com.bupt.dlplatform.vo.ResponseVO;
 import com.bupt.dlplatform.vo.SearchTestInputVO;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ import java.util.List;
 @Slf4j
 @Service
 
-public class SearchTestInfoServiceImpl implements SearchTestInfoService {
+public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     @Autowired
     private TTestRecordRepository tTestRecordRepository;
 
      // 模型测试记录查询
     @Override
-    public ResponseVO<TTestRecordEntity> testRecord(SearchTestInputVO request) {
+    public ResponseVO<List<TTestRecordEntity>> testRecord(SearchTestInputVO request) {
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
 
@@ -46,6 +46,23 @@ public class SearchTestInfoServiceImpl implements SearchTestInfoService {
             }
         } catch (Exception e) {
             log.error("SearchTestRecord 异常", e);
+            return responseVO;
+        }
+
+    }
+
+
+    //模型测试
+    @Override
+    public ResponseVO<TTestRecordEntity> addTestRecord(SearchTestInputVO request){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        try{
+
+
+            return responseVO;
+
+        }catch (Exception e) {
+            log.error("测试模型 异常", e);
             return responseVO;
         }
 

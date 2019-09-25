@@ -3,16 +3,11 @@ package com.bupt.dlplatform;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
-import org.aspectj.weaver.ast.ITestVisitor;
-import org.aspectj.weaver.ast.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 
-public class test {
+public class FtpTest {
     //ftp服务器地址
     public String hostname = "10.112.140.83";
     //ftp服务器端口号默认为21
@@ -23,6 +18,7 @@ public class test {
     public String password = "123456";
 
     public FTPClient ftpClient = null;
+
 
     /**
      * 初始化ftp服务器
@@ -217,12 +213,91 @@ public class test {
         return flag;
     }
 
+    /** * 下载文件 *
+     * @param pathname FTP服务器文件目录 *
+     * @param filename 文件名称 *
+     * @param localpath 下载后的文件路径 *
+     * @return */
+    public  boolean downloadFile(String pathname, String filename, String localpath){
+        boolean flag = false;
+        OutputStream os=null;
+        try {
 
-    public static void main(String[] args) {
-        test test1=new test();
-        test1.uploadFile("", "pic1.png", "/Users/lin_z/Downloads/pic1.png");
-        //ftp.downloadFile("ftpFile/data", "pic1.png", "/Users/lin_z/Downloads/");
-        System.out.println("ok");
+            System.out.println("开始下载文件");
+            initFtpClient();
+            //切换FTP目录
+            ftpClient.changeWorkingDirectory(pathname);
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            for(FTPFile file : ftpFiles){
+                if(filename.equalsIgnoreCase(file.getName())){
+
+                    File localFile = new File(localpath + "/" + file.getName());
+                    os = new FileOutputStream(localFile);
+                    ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
+                    ftpClient.retrieveFile(file.getName(), os);
+                    os.close();
+                }
+            }
+            ftpClient.logout();
+            flag = true;
+            System.out.println("下载文件成功");
+        } catch (Exception e) {
+            System.out.println("下载文件失败");
+            e.printStackTrace();
+        } finally{
+            if(ftpClient.isConnected()){
+                try{
+                    ftpClient.disconnect();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+            if(null != os){
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return flag;
     }
 
+    /** * 删除文件 *
+     * @param pathname FTP服务器保存目录 *
+     * @param filename 要删除的文件名称 *
+     * @return */
+    public boolean deleteFile(String pathname, String filename){
+        boolean flag = false;
+        try {
+            System.out.println("开始删除文件");
+            initFtpClient();
+            //切换FTP目录
+            ftpClient.changeWorkingDirectory(pathname);
+            ftpClient.dele(filename);
+            ftpClient.logout();
+            flag = true;
+            System.out.println("删除文件成功");
+        } catch (Exception e) {
+            System.out.println("删除文件失败");
+            e.printStackTrace();
+        } finally {
+            if(ftpClient.isConnected()){
+                try{
+                    ftpClient.disconnect();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return flag;
+    }
+
+    public static void main(String[] args) {
+        FtpTest ftp =new FtpTest();
+        ftp.uploadFile("", "pic3.png", "/Users/lin_z/Downloads/bus_data/P1_bus_3.jpg");
+        ftp.downloadFile("", "pic3.png", "/Users/lin_z/Downloads/");
+        //ftp.deleteFile("", "pic1.png");
+        System.out.println("ok");
+    }
 }

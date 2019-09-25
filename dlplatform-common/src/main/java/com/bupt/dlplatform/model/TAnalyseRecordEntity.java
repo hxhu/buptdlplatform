@@ -25,17 +25,17 @@ public class TAnalyseRecordEntity {
 
     private Date updateTime;
 
-    private Integer analyseResultId;
+    private String analyseResultId;
 
     private String analyseRecordName;
 
     private Date analyseRecordTime;
 
-    private Integer userId;
+    private String userId;
 
-    private Integer logId;
+    private String logId;
 
-    private Integer analyseId;
+    private String analyseId;
 
     private String analyseClass;
 

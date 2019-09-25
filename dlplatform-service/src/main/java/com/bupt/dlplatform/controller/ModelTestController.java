@@ -1,7 +1,6 @@
 package com.bupt.dlplatform.controller;
 
-import com.bupt.dlplatform.service.SearchTestInfoService;
-import com.bupt.dlplatform.service.impl.SearchTestInfoServiceImpl;
+import com.bupt.dlplatform.service.ModelTestInfoService;
 import com.bupt.dlplatform.vo.ResponseVO;
 import com.bupt.dlplatform.vo.SearchTestInputVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SearchTestController {
+public class ModelTestController {
     @Autowired
-    SearchTestInfoService searchTestInfoService;
+    ModelTestInfoService modelTestInfoService;
 
     //查询测试记录
-    @PostMapping("/dlplatform/serchTestRecord")
-    public ResponseVO testRecord(@RequestBody @Validated SearchTestInputVO request){
-        return  searchTestInfoService.testRecord(request);
+    @PostMapping("/dlplatform/searchTestRecord")
+    public ResponseVO searchTestRecord(@RequestBody @Validated SearchTestInputVO request){
+        return  modelTestInfoService.testRecord(request);
 
     }
 }

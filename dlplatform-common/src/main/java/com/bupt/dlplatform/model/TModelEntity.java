@@ -21,7 +21,7 @@ public class TModelEntity {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer modelId;
+    private String modelId;
 
     private String modelName;
 

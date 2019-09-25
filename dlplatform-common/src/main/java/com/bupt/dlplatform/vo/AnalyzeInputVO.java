@@ -1,4 +1,4 @@
 package com.bupt.dlplatform.vo;
 
-public class AnalyzeInputVO {
+public class AnalyzeInputVO extends BaseInputVO{
 }

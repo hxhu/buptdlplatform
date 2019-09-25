@@ -25,7 +25,7 @@ public class TTrainsetEntity {
 
     private Date updateTime;
 
-    private Integer trainsetId;
+    private String trainsetId;
 
     private String trainsetName;
 

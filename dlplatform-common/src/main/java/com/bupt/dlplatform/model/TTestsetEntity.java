@@ -25,7 +25,7 @@ public class TTestsetEntity {
 
     private Date updateTime;
 
-    private Integer testsetId;
+    private String testsetId;
 
     private String testsetName;
 

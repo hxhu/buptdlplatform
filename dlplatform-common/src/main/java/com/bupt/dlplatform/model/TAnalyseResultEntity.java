@@ -25,7 +25,7 @@ public class TAnalyseResultEntity {
 
     private Date updateTime;
 
-    private Integer analyseId;
+    private String analyseId;
 
     private String analyseName;
 

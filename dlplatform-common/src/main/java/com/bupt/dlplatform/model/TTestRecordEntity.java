@@ -25,21 +25,23 @@ public class TTestRecordEntity {
 
     private Date updateTime;
 
-    private Integer testId;
+    private String testId;
 
     private String testName;
 
     private Date testTime;
 
-    private Integer testsetId;
+    private String testsetId;
 
-    private Integer modelId;
+    private String modelId;
 
-    private Integer resultId;
+    private String resultId;
 
-    private Integer userId;
+    private String userId;
 
     private String testNetwork;
+
+    private String configId;
 
 
 }

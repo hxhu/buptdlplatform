@@ -5,7 +5,13 @@ import com.bupt.dlplatform.model.TTestRecordEntity;
 import com.bupt.dlplatform.vo.ResponseVO;
 import com.bupt.dlplatform.vo.SearchTestInputVO;
 
-public interface SearchTestInfoService {
-    ResponseVO<TTestRecordEntity> testRecord(SearchTestInputVO request);
+import java.util.List;
+
+public interface ModelTestInfoService {
+    //查询测试记录
+    ResponseVO<List<TTestRecordEntity>> testRecord(SearchTestInputVO request);
+
+    //增加测试记录
+    ResponseVO<TTestRecordEntity> addTestRecord(SearchTestInputVO request);
 
 }

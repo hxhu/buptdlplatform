@@ -25,7 +25,7 @@ public class TTrainRecordEntity  {
 
     private Date updateTime;
 
-    private Integer trainId;
+    private String trainId;
 
     private String trainName;
 
@@ -35,15 +35,15 @@ public class TTrainRecordEntity  {
 
     private String trainStatus;
 
-    private Integer trainsetId;
+    private String trainsetId;
 
-    private Integer userId;
+    private String userId;
 
-    private Integer configId;
+    private String configId;
 
     private String trainTask;
 
-    private Integer logId;
+    private String logId;
 
 
 }

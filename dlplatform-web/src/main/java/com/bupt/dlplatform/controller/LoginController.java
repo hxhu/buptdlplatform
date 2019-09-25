@@ -31,7 +31,7 @@ public class LoginController {
     private UserLoginApi userLoginApi;
 
 
-    @ApiOperation("注册用户")
+    @ApiOperation("登录用户")
     @RequestMapping(value = "/dlplatform/login",method = RequestMethod.POST)
     public ResponseVO mobileLogin(@RequestBody @Validated LoginInputVO loginInputVO, HttpServletResponse response){
         ResponseVO<String> responseVO = new ResponseVO<>(ResponseCode.PARAM_INVALID);

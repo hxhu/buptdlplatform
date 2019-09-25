@@ -1,8 +1,8 @@
-package com.bupt.dlplatform.model;
+package com.bupt.dlplatform.model;;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
 
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,24 +13,23 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author zhongling
- * @since 2019-09-02
+ * @since 2019-09-18
  */
 @Data
+
 @Accessors(chain = true)
-@TableName("t_log")
-public class TLogEntity {
+@TableName("t_testset_record")
+public class TTestsetRecordEntity {
 
     private static final long serialVersionUID = 1L;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
-    private String logId;
+    private String testsetId;
 
-    private Date logTime;
-
-    private String logLocation;
+    private String userId;
 
 
 }

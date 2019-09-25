@@ -39,10 +39,10 @@ public class RegisterController {
         try{
             ResponseVO<TUserEntity> res = userRegisterApi.userRegister(registerInputVO);
             if(res.getCode()==ResponseCode.OK.value()){
-                TUserEntity se = res.getData();
+                //TUserEntity se = res.getData();
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
-                responseVO.setData(se.getUserName());
+                //responseVO.setData(se.getUserName());
             }else {
                 responseVO.setCode(res.getCode());
                 responseVO.setMsg(res.getMsg());

@@ -26,7 +26,7 @@ public class TTestResultEntity {
 
     private Date updateTime;
 
-    private Integer resultId;
+    private String resultId;
 
     private String resultName;
 
