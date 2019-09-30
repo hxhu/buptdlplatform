@@ -16,6 +16,7 @@
         <result column="user_id" property="userId" />
         <result column="test_network" property="testNetwork" />
         <result column="config_id" property="configId" />
+        <result column="threshold" property="threshold"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

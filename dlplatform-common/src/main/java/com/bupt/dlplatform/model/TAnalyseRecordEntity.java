@@ -39,5 +39,7 @@ public class TAnalyseRecordEntity {
 
     private String analyseClass;
 
+    private String trainId;
+
 
 }

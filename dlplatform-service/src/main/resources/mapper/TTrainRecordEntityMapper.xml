@@ -17,6 +17,7 @@
         <result column="config_id" property="configId" />
         <result column="train_task" property="trainTask" />
         <result column="log_id" property="logId" />
+        <result column="network" property="network" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

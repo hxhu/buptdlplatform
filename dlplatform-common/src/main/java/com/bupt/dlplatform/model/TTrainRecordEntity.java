@@ -45,5 +45,7 @@ public class TTrainRecordEntity  {
 
     private String logId;
 
+    private String network;
+
 
 }

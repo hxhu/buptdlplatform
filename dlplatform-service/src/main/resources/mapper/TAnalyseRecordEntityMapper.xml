@@ -14,6 +14,7 @@
         <result column="log_id" property="logId" />
         <result column="analyse_id" property="analyseId" />
         <result column="analyse_class" property="analyseClass" />
+        <result column="train_id" property="trainId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
