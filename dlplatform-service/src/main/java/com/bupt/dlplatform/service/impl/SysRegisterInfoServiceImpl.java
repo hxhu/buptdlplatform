@@ -43,7 +43,7 @@ public class SysRegisterInfoServiceImpl implements SysRegisterInfoService {
                 responseVO.setMsg("手机号已注册，请直接登陆!");
                 return responseVO;
             }else {
-                /*讲数据插入TUser表中*/
+                /*将数据插入TUser表中*/
                 Long time =System.currentTimeMillis();
                 Date createTime = new Date(time);
                 String createTimeString = time.toString();

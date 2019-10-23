@@ -12,6 +12,7 @@
         <result column="testset_time" property="testsetTime" />
         <result column="testset_size" property="testsetSize" />
         <result column="testset_location" property="testsetLocation" />
+        <result column="description" property="description"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

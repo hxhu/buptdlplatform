@@ -10,6 +10,7 @@
         <result column="model_id" property="modelId" />
         <result column="user_id" property="userId" />
         <result column="train_id" property="trainId" />
+        <result column="config_id" property="configId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

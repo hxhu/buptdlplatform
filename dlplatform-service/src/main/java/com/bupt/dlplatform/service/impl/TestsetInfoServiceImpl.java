@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -61,6 +62,69 @@ public class TestsetInfoServiceImpl implements TestsetInfoService {
         }
     }
 
+
+    //更新测试集记录和测试集表
+    @Override
+    public ResponseVO<TTestsetEntity> addTestset(TestsetInputVO request){
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        try {
+            String userId= request.getUserId();
+            String testsetId = request.getTestsetID();
+            String testsetName =request.getTestsetName();
+            Date testsetTime=request.getTestsetTime();
+            String testsetLocation = request.getTestsetLocation();
+            Double testsetSize=request.getTestsetSize();
+            Long time =System.currentTimeMillis();
+            Date createTime = new Date(time);
+            String description = request.getDescription();
+
+            TTestsetEntity tTestsetEntity=new TTestsetEntity();
+            tTestsetEntity.setCreateTime(createTime);
+            tTestsetEntity.setTestsetId(testsetId);
+            tTestsetEntity.setTestsetName(testsetName);
+            tTestsetEntity.setTestsetSize(testsetSize);
+            tTestsetEntity.setTestsetTime(testsetTime);
+            tTestsetEntity.setTestsetLocation(testsetLocation);
+            tTestsetEntity.setDescripton(description);
+            tTestsetRepository.insert(tTestsetEntity);
+
+
+            TTestsetRecordEntity tTestsetRecordEntity =new TTestsetRecordEntity();
+            tTestsetRecordEntity.setCreateTime(createTime);
+            tTestsetRecordEntity.setUserId(userId);
+            tTestsetRecordEntity.setTestsetId(testsetId);
+            tTestsetRecordRepository.insert(tTestsetRecordEntity);
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(tTestsetRecordEntity);
+            return responseVO;
+
+        }catch (Exception e){
+            log.error("uploadTestset 异常", e);
+            return responseVO;
+
+        }
+
+    }
+
+
+    @Override
+    public ResponseVO<TTestsetEntity> deleteTestset(TestsetInputVO request){
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        try {
+            String userId=request.getUserId();
+            String fileId=request.getTestsetID();
+            tTestsetRepository.delete(Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,fileId));
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData("删除成功！");
+
+        }catch (Exception e){
+            log.error("deleteTestset异常");
+        }
+        return responseVO;
+    }
 
 
 }

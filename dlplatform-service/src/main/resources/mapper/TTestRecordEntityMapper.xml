@@ -17,6 +17,7 @@
         <result column="test_network" property="testNetwork" />
         <result column="config_id" property="configId" />
         <result column="threshold" property="threshold"/>
+        <result column="test_label" property="testLabel"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

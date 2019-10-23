@@ -45,5 +45,7 @@ public class TTestRecordEntity {
 
     private double threshold;
 
+    private String testLabel;
+
 
 }

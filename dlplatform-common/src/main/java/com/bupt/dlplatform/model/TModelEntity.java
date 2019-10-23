@@ -42,5 +42,8 @@ public class TModelEntity {
      */
     private Boolean modelCommon;
 
+    private String modelLabel;
+
+
 
 }
