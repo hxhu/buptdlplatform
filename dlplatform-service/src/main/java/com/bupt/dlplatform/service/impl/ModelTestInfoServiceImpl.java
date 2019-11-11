@@ -7,20 +7,12 @@ import com.bupt.dlplatform.model.*;
 import com.bupt.dlplatform.service.ModelTestInfoService;
 import com.bupt.dlplatform.util.FtpUtil;
 import com.bupt.dlplatform.vo.*;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-
-import java.io.OutputStream;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,9 +41,14 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     @Autowired
     private FtpUtil ftpUtil;
 
-     // 模型测试记录查询
+    /**
+     * 测试记录查询
+     * @param request
+     * @return
+     * testTime,
+     */
     @Override
-    public ResponseVO<List<TTestRecordEntity>> testRecord(SearchTestInputVO request) {
+    public ResponseVO<List<ModelTestOutputVO>> testRecord(SearchTestInputVO request) {
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
             String userId = request.getUserId();
@@ -65,9 +62,39 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                 responseVO.setMsg("用户还没有模型检测记录！");
                 return responseVO;
             }else {
+                List<ModelTestOutputVO> list_result=new ArrayList<>();
+                for(int i=0;i<list.size();i++){
+                    ModelTestOutputVO modelTestOutputVO = new ModelTestOutputVO();
+                    String testId = list.get(i).getTestId();
+                    String testName = list.get(i).getTestName();
+                    Date testTime = list.get(i).getTestTime();
+                    String network = list.get(i).getTestNetwork();
+                    String modelId = list.get(i).getModelId();
+                    String modelName = tModelRepository.selectOne
+                            (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId,modelId)).getModelName();
+                    String testsetId = list.get(i).getTestsetId();
+                    String testsetName = tTestsetRepository.selectOne
+                            (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,testsetId)).getTestsetName();
+
+                    Double threshold = list.get(i).getThreshold();
+                    String resultId = list.get(i).getResultId();
+
+                    modelTestOutputVO.setTestId(testId);
+                    modelTestOutputVO.setTestName(testName);
+                    modelTestOutputVO.setTestTime(testTime);
+                    modelTestOutputVO.setNetwork(network);
+                    modelTestOutputVO.setModelId(modelId);
+                    modelTestOutputVO.setModelName(modelName);
+                    modelTestOutputVO.setTestsetId(testsetId);
+                    modelTestOutputVO.setTestsetName(testsetName);
+                    modelTestOutputVO.setThreshold(threshold);
+                    modelTestOutputVO.setResultId(resultId);
+
+                    list_result.add(modelTestOutputVO);
+                }
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
-                responseVO.setData(list);
+                responseVO.setData(list_result);
                 return responseVO;
             }
         } catch (Exception e) {
@@ -79,7 +106,12 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
 
 
     //查询"自定义测试"所需相关选项
-    //查询测试网络
+
+    /**
+     * 查询可用测试网络
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO getOptionNetwork(BaseInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
@@ -91,6 +123,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             };
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(network);
 
 
         }catch (Exception e){
@@ -101,9 +134,14 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
         return responseVO;
     }
 
-    //查询可用的测试模型
+    /**
+     * 查询可用的测试模型
+     * @param request
+     * @return
+     * message:modelId,modelName
+     */
     @Override
-    public ResponseVO getOptionModel(ModelTestInputVO request){
+    public ResponseVO<List<OptionVO>> getOptionModel(ModelTestInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try{
             String  userId=request.getUserId();
@@ -128,9 +166,20 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelCommon,0).eq(TModelEntity::getNetwork,network));
 
             model_message.addAll(model_message_common);
+
+            List<OptionVO> list_result= new ArrayList<>();
+            for (int i =0; i<model_message.size();i++){
+                OptionVO modelOptionVO = new OptionVO();
+                String modelId = model_message.get(i).getModelId();
+                String modelName = model_message.get(i).getModelName();
+                modelOptionVO.setId(modelId);
+                modelOptionVO.setName(modelName);
+                list_result.add(modelOptionVO);
+            }
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData(model_message);
+            responseVO.setData(list_result);
         }catch (Exception e){
             log.error("getOptionModel异常",e);
             responseVO.setData("Have an error for getOptionModel!");
@@ -138,9 +187,14 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
         return responseVO;
 
     }
-    //查询可用的测试集
+
+    /**
+     * 查询可用的测试集
+     * @param request
+     * @return
+     */
     @Override
-    public ResponseVO getOptionTestset(BaseInputVO request){
+    public ResponseVO<List<OptionVO>> getOptionTestset(BaseInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try{
             String  userId=request.getUserId();
@@ -149,17 +203,20 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     (Wrappers.<TTestsetRecordEntity>lambdaQuery().eq(TTestsetRecordEntity::getUserId,userId));
 
             if(!CollectionUtils.isEmpty(testset_list)){
-                List<TTestsetEntity> testset_message =new ArrayList<>();
-                TTestsetEntity temp_testset;
+                List<OptionVO> list_result= new ArrayList<>();
+                OptionVO testsetOption = new OptionVO();
                 for(int i=0;i<testset_list.size();i++){
-                    String temp_testsetId = testset_list.get(i).getTestsetId();
-                    temp_testset=tTestsetRepository.selectOne
-                            (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId ,temp_testsetId));
-                    testset_message.add(temp_testset);
+                    String testsetId = testset_list.get(i).getTestsetId();
+                    TTestsetEntity temp_testset=tTestsetRepository.selectOne
+                            (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId ,testsetId));
+                    String testsetName= temp_testset.getTestsetName();
+                    testsetOption.setId(testsetId);
+                    testsetOption.setName(testsetName);
+                    list_result.add(testsetOption);
                 }
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
-                responseVO.setData(testset_message);
+                responseVO.setData(list_result);
             }else{
                 responseVO.setCode(ResponseCode.RECORD_NULL.value());
                 responseVO.setMsg(ResponseCode.RECORD_NULL.getDescription());
@@ -175,15 +232,19 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
 
     }
 
-    //查询测试标签
+    /**
+     * 查询测试标签
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO getOptionTestLabel(ModelTestInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try{
             String  userId=request.getUserId();
-            String  model = request.getModelID();
+            String  modelId = request.getModelId();
             TModelEntity model_message=tModelRepository.selectOne
-                    (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId, model));
+                    (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId, modelId));
             String labelString=model_message.getModelLabel();
             String[] label_list=labelString.split("\\/");
             responseVO.setCode(ResponseCode.OK.value());
@@ -191,15 +252,19 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             responseVO.setData(label_list);
 
         }catch (Exception e){
-            log.error("getOptionTestLabel 异常",e);
-            responseVO.setData("Have an error for getOptionTestLabel!");
-        }
+        log.error("getOptionTestLabel 异常",e);
+        responseVO.setData("Have an error for getOptionTestLabel!");
+    }
 
         return responseVO;
     }
 
 
-    //增加测试记录
+    /**
+     * 增加测试记录
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO addTestRecord(ModelTestInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
@@ -207,26 +272,26 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             TTestRecordEntity tTestRecordEntity =new TTestRecordEntity();
             Long time =System.currentTimeMillis();
             Date createTime = new Date(time);
-            String timeString= createTime.toString();
+            String timeString= time.toString();
             tTestRecordEntity.setCreateTime(createTime);
             //生成testID
-            String userID=request.getUserId();
-            String testID="test"+userID+timeString;
-            String resultID="result"+userID+timeString;
+            String userId=request.getUserId();
+            String testId="t"+userId+timeString;
+            String resultId="r"+userId+timeString;
 
             //获取ConfigID
-            String modelID=request.getModelID();
+            String modelId=request.getModelId();
             TModelRecordEntity tModelRecordEntity=new TModelRecordEntity();
             tModelRecordEntity=tModelRecordRepository.selectOne
-                    (Wrappers.<TModelRecordEntity>lambdaQuery().eq(TModelRecordEntity::getModelId,modelID));
+                    (Wrappers.<TModelRecordEntity>lambdaQuery().eq(TModelRecordEntity::getModelId,modelId));
             String configID=tModelRecordEntity.getConfigId();
 
-            tTestRecordEntity.setTestId(testID);
+            tTestRecordEntity.setTestId(testId);
             tTestRecordEntity.setTestName(request.getTestName());
-            tTestRecordEntity.setTestTime(request.getTestTime());
-            tTestRecordEntity.setTestsetId(request.getTestsetID());
-            tTestRecordEntity.setModelId(modelID);
-            tTestRecordEntity.setResultId(resultID);
+            tTestRecordEntity.setTestTime(createTime);
+            tTestRecordEntity.setTestsetId(request.getTestsetId());
+            tTestRecordEntity.setModelId(modelId);
+            tTestRecordEntity.setResultId(resultId);
             tTestRecordEntity.setUserId(request.getUserId());
             tTestRecordEntity.setTestNetwork(request.getTestNetwork());
             tTestRecordEntity.setConfigId(configID);
@@ -237,9 +302,12 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             TTestResultEntity tTestResultEntity= runTest(tTestRecordEntity);
             tTestResultRepository.insert(tTestResultEntity);
 
+            ModelTestOutputVO modelTestOutputVO = new ModelTestOutputVO();
+            modelTestOutputVO.setTestId(testId);
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData("检测完成，记录添加成功！");
+            responseVO.setData(modelTestOutputVO);
 
         }catch (Exception e){
             log.error("addTestRecord 异常",e);
@@ -248,7 +316,11 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
         return responseVO;
     }
 
-    //进行检测并且返回result_location
+    /**
+     * 进行检测并且返回result_location
+     * @param tTestRecordEntity
+     * @return
+     */
     public TTestResultEntity runTest(TTestRecordEntity tTestRecordEntity){
         String result_location;
 
@@ -257,7 +329,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
         /**
          *获取数据-->调用pyyhon 脚本-->获取返回的result_location
          */
-        result_location="/Users/lin_z/Downloads/pic1.png";
+        result_location="156801456984113164294368/testset/1571820877383";
         TTestResultEntity tTestResultEntity=new TTestResultEntity();
         tTestResultEntity.setCreateTime(createTime);
         tTestResultEntity.setResultId(tTestRecordEntity.getResultId());
@@ -268,30 +340,53 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     }
 
 
-    //查看检测结果
+    /**
+     * 查看检测结果
+     * @param request
+     * testId
+     * @return
+     * 返回的是检测相关信息和结果路径
+     */
     @Override
     public ResponseVO searchTestResult(ModelTestInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
-        String resultID= request.getResultID();
+        String testId =request.getTestId();
         try{
+            TTestRecordEntity tTestRecordEntity = tTestRecordRepository.selectOne(
+                    (Wrappers.<TTestRecordEntity>lambdaQuery().eq(TTestRecordEntity::getTestId,testId)));
+            String resultId = tTestRecordEntity.getResultId();
+
             TTestResultEntity result= tTestResultRepository.selectOne
-                    (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultID));
+                    (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultId));
             if (result==null){
                 responseVO.setCode(ResponseCode.RECORD_NULL.value());
                 responseVO.setMsg(ResponseCode.RECORD_NULL.getDescription());
                 responseVO.setData("没有结果");
+                return responseVO;
             }
+
             String resultName=result.getResultName();
-            //String resultLocation= result.getResultLocation();
+            String resultLocation= result.getResultLocation();
             Date resultTime = result.getResultTime();
-            String network = request.getTestNetwork();
-            String modelName= request.getModelName();
+
+            String network = tTestRecordEntity.getTestNetwork();
+            String modelId= tTestRecordEntity.getModelId();
+            String modelName = tModelRepository.selectOne
+                    (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId,modelId)).getModelName();
+
+
+            //获取结果图的图片名列表
+            List<String> listPicName=ftpUtil.getPicName(resultLocation);
+            String[] strsPath=listPicName.toArray(new String[listPicName.size()]);
 
             TestResultInputVO testResultInputVO=new TestResultInputVO();
+            testResultInputVO.setTestId(testId);
             testResultInputVO.setResultName(resultName);
-            testResultInputVO.setResultTime( resultTime);
+            testResultInputVO.setResultTime(resultTime);
+            testResultInputVO.setResultId(resultId);
             testResultInputVO.setNetwork(network);
             testResultInputVO.setModelName(modelName);
+            testResultInputVO.setPicList(strsPath);
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -304,41 +399,34 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
         return responseVO;
     }
 
-
-
-
-    //获取图片数据流并且显示
     @Override
-    public void showTestResult(ModelTestInputVO request, HttpServletResponse response){
-        String resultID= request.getResultID();
-
+    public ResponseVO getResultLoc(TestResultInputVO request){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        String testId =request.getTestId();
         try{
-            TTestResultEntity result= tTestResultRepository.selectOne
-                    (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultID));
+            TTestRecordEntity tTestRecordEntity = tTestRecordRepository.selectOne(
+                    (Wrappers.<TTestRecordEntity>lambdaQuery().eq(TTestRecordEntity::getTestId,testId)));
+            String resultId = tTestRecordEntity.getResultId();
+            String resultLoc = tTestResultRepository.selectOne
+                    (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultId)).getResultLocation();
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(resultLoc);
 
-            //只是目录！
-            String resultLocation= result.getResultLocation();
-
-           // InputStream imageIn = new FileInputStream(new File((resultLocation)));
-            InputStream imageIn =ftpUtil.getPicStream(resultLocation);
-            // 得到输入的编码器，将文件流进行jpg格式编码
-            JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(imageIn);
-            // 得到编码后的图片对象
-            BufferedImage image = decoder.decodeAsBufferedImage();
-
-            OutputStream out = response.getOutputStream();
-            ImageIO.write(image, "jpg", out);
-            imageIn.close();// 关闭文件流
-            image.flush();
-            out.flush();
-            out.close();
         }catch (Exception e){
-            log.error("showTestResult 异常",e);
+            log.error("getResultLoc 异常",e);
+            responseVO.setData("Have an error for getResultLoc！");
         }
+        return responseVO;
     }
 
 
-    //下载检测结果
+
+    /**
+     * 下载结果
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO downloadResult(DownloadInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
@@ -348,6 +436,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             TTestResultEntity result= tTestResultRepository.selectOne
                     (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultId));
             String resultLocation=result.getResultLocation();
+
 
             if(ftpUtil.downloadFile(resultLocation,local)){
                 responseVO.setCode(ResponseCode.OK.value());
@@ -368,11 +457,16 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     }
 
 
-    //删除检测记录
+    /**
+     * 删除检测结果
+     * @param request
+     * TestId
+     * @return
+     */
     @Override
     public ResponseVO deleteTestRecord(ModelTestInputVO request){
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
-        String testId = request.getTestID();
+        String testId = request.getTestId();
         TTestRecordEntity tTestRecordEntity=tTestRecordRepository.selectOne
                 (Wrappers.<TTestRecordEntity>lambdaQuery().eq(TTestRecordEntity::getTestId,testId));
         String resultId = tTestRecordEntity.getResultId();

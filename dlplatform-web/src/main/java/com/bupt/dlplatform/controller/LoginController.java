@@ -56,6 +56,7 @@ public class LoginController {
                 response.setHeader("Access-token",token);
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
+                responseVO.setData("登陆成功");
             }else {
                 responseVO.setCode(res.getCode());
                 responseVO.setMsg(res.getMsg());

@@ -7,7 +7,7 @@
     <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
-        <result column="analyse_result_id" property="analyseResultId" />
+        <result column="analyse_record_id" property="analyseResultId" />
         <result column="analyse_record_name" property="analyseRecordName" />
         <result column="analyse_record_time" property="analyseRecordTime" />
         <result column="user_id" property="userId" />

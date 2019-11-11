@@ -7,9 +7,12 @@ import com.bupt.dlplatform.model.TTestsetEntity;
 import com.bupt.dlplatform.model.TTestsetRecordEntity;
 import com.bupt.dlplatform.vo.ResponseVO;
 import com.bupt.dlplatform.vo.TestsetInputVO;
+import com.bupt.dlplatform.vo.TestsetOutputVO;
+import com.bupt.dlplatform.vo.TestsetTempVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -19,7 +22,22 @@ public class TestsetApiHystrix implements TestsetConsumer {
     private ResponseVO rtn = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
     @Override
-    public ResponseVO<List<TTestsetEntity>> searchTestset(TestsetInputVO testsetInputVO) {
+    public ResponseVO<List<TestsetOutputVO>> searchTestset(TestsetInputVO testsetInputVO) {
+        return rtn;
+    }
+
+    @Override
+    public ResponseVO uploadTestSet(TestsetTempVO testsetTempVO) {
+        return rtn;
+    }
+
+    @Override
+    public ResponseVO<TestsetOutputVO> addTestset(TestsetInputVO request) {
+        return rtn;
+    }
+
+    @Override
+    public ResponseVO deleteTestset(TestsetInputVO request) {
         return rtn;
     }
 }

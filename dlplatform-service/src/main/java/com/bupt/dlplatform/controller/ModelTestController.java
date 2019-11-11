@@ -34,7 +34,7 @@ public class ModelTestController {
         return modelTestInfoService.getOptionNetwork(request);
     }
 
-    /*测试m模型*/
+    /*测试模型*/
     @PostMapping("/dlplatform/getOptionModel")
     public ResponseVO getOptionModel(@RequestBody @Validated ModelTestInputVO request){
         return modelTestInfoService.getOptionModel(request);
@@ -70,14 +70,11 @@ public class ModelTestController {
         return modelTestInfoService.searchTestResult(request);
     }
 
-    /**
-     * 显示检测图片
-     */
-    @PostMapping("/dlplatform/showTestResult")
-    public void showTestResult(HttpServletResponse response, @RequestBody @Validated ModelTestInputVO request){
-            modelTestInfoService.showTestResult(request,response);
-
+    @PostMapping("/dlplatform/getResultLoc")
+    public ResponseVO getResultLoc(@RequestBody @Validated TestResultInputVO request){
+        return modelTestInfoService.getResultLoc(request);
     }
+
 
     /**
      * 下载检测结果

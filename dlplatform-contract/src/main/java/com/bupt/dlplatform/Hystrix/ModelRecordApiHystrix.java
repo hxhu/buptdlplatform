@@ -4,6 +4,7 @@ import com.bupt.dlplatform.consumer.ModelRecordConsumer;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.model.TModelEntity;
 import com.bupt.dlplatform.vo.ModelRecordInputVO;
+import com.bupt.dlplatform.vo.ModelRecordOutputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,12 @@ public class ModelRecordApiHystrix implements ModelRecordConsumer {
     private ResponseVO rtn = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
     @Override
-    public ResponseVO<List<TModelEntity>> searchModelRecord(ModelRecordInputVO modelRecordInputVO) {
+    public ResponseVO<List<ModelRecordOutputVO>> searchModelRecord(ModelRecordInputVO modelRecordInputVO) {
+        return rtn;
+    }
+
+    @Override
+    public ResponseVO deleteModel(ModelRecordInputVO modelRecordInputVO) {
         return rtn;
     }
 

@@ -12,5 +12,6 @@ import lombok.*;
 public class DownloadInputVO extends Serializers.Base {
     private  String resultId;
     private String  localLocation;
+    private String downloadPath;
 }
 

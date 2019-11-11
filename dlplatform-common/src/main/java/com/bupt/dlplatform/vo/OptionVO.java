@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.vo;
 
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -9,10 +10,10 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "模型记录输入")
-public class ModelRecordInputVO extends BaseInputVO {
-
-    @ApiModelProperty(value = "模型Id")
-    private String modelId;
-
+@ApiModel(value = "选项")
+public class OptionVO extends BaseInputVO {
+    @ApiModelProperty(value = "Id")
+    private String id;
+    @ApiModelProperty(value = "名")
+    private String name;
 }

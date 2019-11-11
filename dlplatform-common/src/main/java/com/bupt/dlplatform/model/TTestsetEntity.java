@@ -35,6 +35,6 @@ public class TTestsetEntity {
 
     private String testsetLocation;
 
-    private String descripton;
+    private String description;
 
 }

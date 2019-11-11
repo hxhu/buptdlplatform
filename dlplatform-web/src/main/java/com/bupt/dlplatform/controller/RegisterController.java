@@ -42,7 +42,7 @@ public class RegisterController {
                 //TUserEntity se = res.getData();
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
-                //responseVO.setData(se.getUserName());
+                responseVO.setData("注册成功！");
             }else {
                 responseVO.setCode(res.getCode());
                 responseVO.setMsg(res.getMsg());

@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class SysLoginInfoServiceImpl implements SysLoginInfoService {
 
-      @Autowired
+    @Autowired
     private TUserRepository tUserRepository;
 
     @Override

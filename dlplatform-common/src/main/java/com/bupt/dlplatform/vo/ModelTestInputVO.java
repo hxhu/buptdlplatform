@@ -2,7 +2,9 @@ package com.bupt.dlplatform.vo;
 
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 
@@ -14,19 +16,25 @@ import java.util.Date;
 @ApiModel(value = "模型测试相关")
 public class ModelTestInputVO extends  BaseInputVO {
 
-    private Date createdTime;
-    private String testID;
-    private String testName;
-    private Date testTime;
-    private String testsetID;
-    private String testsetName;
-    private String modelID;
-    private String modelName;
-    private String label;
-    private Double threshold;
-    private String configId;
+    @ApiModelProperty(value = "测试Id")
+    private String testId;
+
+    @ApiModelProperty(value = "检测网络")
     private String testNetwork;
-    private String modelLabel;
-    private String resultID;
+
+    @ApiModelProperty(value = "模型Id")
+    private String modelId;
+
+    @ApiModelProperty(value = "测试名")
+    private String testName;
+
+    @ApiModelProperty(value = "测试集Id")
+    private String testsetId;
+
+    @ApiModelProperty(value = "阈值")
+    private Double threshold;
+
+    @ApiModelProperty(value = "标签")
+    private String label;
 
 }

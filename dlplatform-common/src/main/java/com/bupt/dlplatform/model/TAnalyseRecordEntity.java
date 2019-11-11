@@ -25,7 +25,7 @@ public class TAnalyseRecordEntity {
 
     private Date updateTime;
 
-    private String analyseResultId;
+    private String analyseRecordId;
 
     private String analyseRecordName;
 

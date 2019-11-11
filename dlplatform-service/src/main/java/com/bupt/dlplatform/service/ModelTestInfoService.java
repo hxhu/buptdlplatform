@@ -11,16 +11,15 @@ import java.util.List;
 
 public interface ModelTestInfoService {
     //查询测试记录
-    ResponseVO<List<TTestRecordEntity>> testRecord(SearchTestInputVO request);
+    ResponseVO<List<ModelTestOutputVO>> testRecord(SearchTestInputVO request);
 
     //查询"自定义测试"所需相关选项
-
     //测试网络
     ResponseVO getOptionNetwork(BaseInputVO request);
     //测试模型
-    ResponseVO getOptionModel(ModelTestInputVO request);
+    ResponseVO<List<OptionVO>> getOptionModel(ModelTestInputVO request);
     //测试集
-    ResponseVO getOptionTestset(BaseInputVO request);
+    ResponseVO<List<OptionVO>> getOptionTestset(BaseInputVO request);
     //测试标签
     ResponseVO getOptionTestLabel(ModelTestInputVO request);
 
@@ -31,8 +30,8 @@ public interface ModelTestInfoService {
     //查看检测结果
     ResponseVO searchTestResult(ModelTestInputVO request);
 
-    //显示检测结果图片
-    void showTestResult(ModelTestInputVO request, HttpServletResponse response);
+    //显示图片需要的信息
+    ResponseVO getResultLoc(TestResultInputVO request);
 
     //下载检测结果
     ResponseVO downloadResult(DownloadInputVO request);

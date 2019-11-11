@@ -1,10 +1,7 @@
 package com.bupt.dlplatform.vo;
 
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,9 +9,10 @@ import java.util.Date;
 @Builder
 @ToString
 @AllArgsConstructor
-@ApiModel(value = "测试集")
+@NoArgsConstructor
+@ApiModel(value = "测试集相关输入")
 public class TestsetInputVO extends BaseInputVO {
-    private String testsetID;
+    private String testsetId;
     private String testsetName;
     private Date testsetTime;
     private Double testsetSize;
