@@ -14,6 +14,6 @@ eureka:
       defaultZone: http://localhost:8771/eureka/
 
 ftp:
-  host: 10.112.140.83
-  username: uftp
+  host: 47.94.44.231
+  username: ftpdir
   password: 123456

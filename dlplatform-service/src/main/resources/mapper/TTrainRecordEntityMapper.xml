@@ -15,9 +15,10 @@
         <result column="trainset_id" property="trainsetId" />
         <result column="user_id" property="userId" />
         <result column="config_id" property="configId" />
-        <result column="train_task" property="trainTask" />
+        <result column="description" property="description" />
         <result column="log_id" property="logId" />
         <result column="network" property="network" />
+        <result column="gpus" property="gpus"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

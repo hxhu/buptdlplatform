@@ -51,6 +51,7 @@ public class FeignInterceptor implements RequestInterceptor {
                 body.append(name).append("=").append(values).append("&");
             }
         }
+        template.header("Content-Type","application/json");
         if (body.length() != 0) {
             body.deleteCharAt(body.length() - 1);
             template.body(body.toString());

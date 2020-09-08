@@ -31,7 +31,7 @@ public class TTrainsetEntity {
 
     private Date trainsetTime;
 
-    private Double trainsetSize;
+    private String classNum;
 
     private String trainsetLocation;
 
@@ -42,7 +42,7 @@ public class TTrainsetEntity {
 
     private String trainsetType;
 
-    private String trainsetTask;
+    private String description;
 
 
 }

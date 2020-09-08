@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "service-producer-dlplatform", fallback = UserRegisterApiHystrix.class)
 public interface UserRegisterApi {
 
+    /**
+     * 用户注册
+     * @param registerInputVO
+     * @return
+     */
     @RequestMapping(value = "/dlplatform/register",method = RequestMethod.POST)
     ResponseVO<TUserEntity> userRegister(@RequestBody RegisterInputVO registerInputVO);
 

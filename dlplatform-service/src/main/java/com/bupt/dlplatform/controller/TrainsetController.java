@@ -14,10 +14,23 @@ public class TrainsetController {
     @Autowired
     TrainsetInfoService trainsetInfoService;
 
-    //查询训练集记录
+    /**
+     * 查询训练集记录
+     * @param request
+     * @return
+     */
     @PostMapping("/dlplatform/searchTrainset")
     public ResponseVO searchTrainsetRecord(@RequestBody @Validated TrainsetInputVO request){
         return  trainsetInfoService.trainsetRecord(request);
 
+    }
+    /*
+     *
+     * 从数据库中删除训练集
+     *
+     *  */
+    @PostMapping("/dlplatform/deleteTrainset")
+    public ResponseVO deleteTestset(@RequestBody @Validated TrainsetInputVO request){
+        return trainsetInfoService.deleteTrainset(request);
     }
 }

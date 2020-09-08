@@ -10,7 +10,9 @@ import com.bupt.dlplatform.vo.ResponseVO;
 import com.bupt.dlplatform.vo.TestsetInputVO;
 import com.bupt.dlplatform.vo.TestsetOutputVO;
 import com.bupt.dlplatform.vo.TestsetTempVO;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -62,20 +64,20 @@ public class TestsetController {
 
     /**
      * 上传测试集
-     * @param httprequest
+     * @param
      * @return
      */
 
-    @RequestMapping(value = "/dlplatform/uploadTestSet", method = RequestMethod.POST)
-    public ResponseVO uploadTestSet(@Validated TestsetInputVO testsetInputVO,  @Validated HttpServletRequest httprequest){
+    @RequestMapping(value = "/dlplatform/uploadComplete", method = RequestMethod.POST)
+    public ResponseVO uploadTestsetComp(@Validated TestsetInputVO testsetInputVO,
+                                        @RequestParam("testsetName") String testsetName,
+                                        @RequestParam("description")String description,
+                                        @RequestParam("file") MultipartFile[] files,
+                                        HttpServletRequest httprequest
+    ){
         ResponseVO responseVO = new ResponseVO(ResponseCode.PARAM_INVALID);
         try{
             String userId=testsetInputVO.getUserId();
-            //转型为MultipartHttpServletRequest
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) httprequest;
-            Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-            String fileName=null;
-
             //生成文件ID:userID+上传时间戳+文件大小
             Long time =System.currentTimeMillis();
             Date uploadTime =new Date(time);
@@ -83,56 +85,63 @@ public class TestsetController {
             Long size_all=0L;
 
             //生成路径 userId/testset/uploadTimeString/
-            String pathName=userId+"/testset/"+uploadTimeString+"/";
+            String pathName=userId+"/testset/"+uploadTimeString;
 
+            //转型为MultipartHttpServletRequest
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) httprequest;
+            Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+
+
+            //文件个数
+            int filesNum= files.length;
             boolean  flag=false;
             Long size;
-            for(Map.Entry<String,MultipartFile> entity : fileMap.entrySet()){
-                flag=false;
+            for(int i=0;i<filesNum;i++){
+            //for(Map.Entry<String,MultipartFile> entity : fileMap.entrySet()){
+                flag= false;
                 //获取单个文件
-                MultipartFile mf = entity.getValue(); // 获得原始文件名
-                fileName = mf.getOriginalFilename(); // 截取文件类型; 这里可以根据文件类型进行判断
-                String fileType = fileName.substring(fileName.lastIndexOf('.'));
-                try{
-                    // 截取上传的文件名称
-                    String newFileName = fileName.substring(0, fileName.lastIndexOf('.'));
-                    //获得输入流
-                    InputStream inputStream = mf.getInputStream();
-                    size = mf.getSize();
-                    size_all=size_all+size;
+                //MultipartFile mf = entity.getValue(); // 获得原始文件名
+                //String fileName = mf.getOriginalFilename(); // 截取文件类型; 这里可以根据文件类型进行判断
 
-                    flag=ftpUtil.uploadFile(pathName, fileName, inputStream);
-                    if(flag==true){
-                        responseVO.setCode(ResponseCode.OK.value());
-                        responseVO.setMsg(ResponseCode.OK.getDescription());
-                    }
-                    else{
-                        //只要有一次没上传成功就结束
-                        responseVO.setCode(ResponseCode.OPERATE_ERROR.value());
-                        responseVO.setMsg(ResponseCode.OPERATE_ERROR.getDescription());
-                        responseVO.setData("文件上传失败");
-                        return responseVO;
-                    }
+                String fileName= files[i].getOriginalFilename();
+                //获得输入流
+                InputStream inputStream = files[i].getInputStream();
+                size = files[i].getSize();
+                size_all=size_all+size;
 
-                }catch (Exception e) {
+                flag=ftpUtil.uploadFile(pathName, fileName, inputStream);
+
+                if(flag==true){
+                }
+                else{
+                    //只要有一次没上传成功就结束
                     responseVO.setCode(ResponseCode.OPERATE_ERROR.value());
                     responseVO.setMsg(ResponseCode.OPERATE_ERROR.getDescription());
                     responseVO.setData("文件上传失败");
-                    e.printStackTrace();
                     return responseVO;
                 }
 
             }
+
             String testsetId=userId+uploadTimeString+size_all.toString();
             TestsetTempVO testsetTempVO= new TestsetTempVO();
             testsetTempVO.setUserId(userId);
             testsetTempVO.setUploadTime(uploadTime);
             testsetTempVO.setTestsetId(testsetId);
+            testsetTempVO.setTestsetName(testsetInputVO.getTestsetName());
             testsetTempVO.setSize(size_all.doubleValue());
             testsetTempVO.setPathname(pathName);
+            testsetTempVO.setDescription(testsetInputVO.getDescription());
 
-
-            ResponseVO res= testsetConsumer.uploadTestSet(testsetTempVO);
+            //ResponseVO res= testsetConsumer.uploadTestSet(testsetTempVO);
+            ResponseVO res= testsetConsumer.uploadTestsetComp(
+                    userId,
+                    uploadTime,
+                    testsetId,
+                    testsetInputVO.getTestsetName(),
+                    size_all.doubleValue(),
+                    pathName,
+                    testsetInputVO.getDescription());
             if(res.getCode()== ResponseCode.OK.value()){
                 Object se = res.getData();
                 responseVO.setCode(ResponseCode.OK.value());
@@ -143,41 +152,21 @@ public class TestsetController {
                 responseVO.setMsg(res.getMsg());
             }
 
+
+
         }catch (Exception e){
-            responseVO.setCode(ResponseCode.SYSTEM_EXCEPTION.value());
-            responseVO.setMsg(ResponseCode.SYSTEM_EXCEPTION.getDescription());
-            log.error("uploadTestSet ---> 异常！", e);
+            responseVO.setCode(ResponseCode.OPERATE_ERROR.value());
+            responseVO.setMsg(ResponseCode.OPERATE_ERROR.getDescription());
+            responseVO.setData("uploadTestSet-->异常");
+            e.printStackTrace();
+
         }
         return responseVO;
     }
 
-    /**
-     * 增加测试集记录
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/dlplatform/addTestset", method = RequestMethod.POST)
-    public ResponseVO<TestsetOutputVO> addTestset( @RequestBody @Validated TestsetInputVO request){
-        ResponseVO responseVO = new ResponseVO(ResponseCode.PARAM_INVALID);
-        try{
-            ResponseVO res= testsetConsumer.addTestset(request);
-            if(res.getCode()== ResponseCode.OK.value()){
-                Object se = res.getData();
-                responseVO.setCode(ResponseCode.OK.value());
-                responseVO.setMsg(ResponseCode.OK.getDescription());
-                responseVO.setData("上传测试集成功");
-            }else {
-                responseVO.setCode(res.getCode());
-                responseVO.setMsg(res.getMsg());
-            }
 
-        }catch (Exception e){
-            responseVO.setCode(ResponseCode.SYSTEM_EXCEPTION.value());
-            responseVO.setMsg(ResponseCode.SYSTEM_EXCEPTION.getDescription());
-            log.error("addTestset ---> 异常！", e);
-        }
-        return responseVO;
-    }
+
+
 
     /**
      * 删除测试集

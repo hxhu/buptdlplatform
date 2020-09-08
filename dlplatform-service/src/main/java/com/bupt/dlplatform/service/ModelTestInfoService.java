@@ -27,6 +27,9 @@ public interface ModelTestInfoService {
     //增加测试记录
     ResponseVO addTestRecord(ModelTestInputVO request);
 
+    //增加检测结果记录
+    ResponseVO getTestResult(TestResultParamVO request);
+
     //查看检测结果
     ResponseVO searchTestResult(ModelTestInputVO request);
 

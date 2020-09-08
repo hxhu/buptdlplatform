@@ -48,6 +48,11 @@ public class ModelTestApiHystrix  implements ModelTestConsumer {
     }
 
     @Override
+    public ResponseVO getTestResult(TestResultParamVO testResultParamVO) {
+        return rtn;
+    }
+
+    @Override
     public ResponseVO searchTestResult(ModelTestInputVO modelTestInputVO) {
         return rtn;
     }

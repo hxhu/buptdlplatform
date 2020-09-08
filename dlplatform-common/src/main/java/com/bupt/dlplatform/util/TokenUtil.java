@@ -161,6 +161,10 @@ public class TokenUtil {
     }
 
 
+    /**
+     * 测试
+     * @param args
+     */
     public static void main(String[] args) {
 //        TkGenerateParameter info = new TkGenerateParameter();
 //        info.setUserName("admin");

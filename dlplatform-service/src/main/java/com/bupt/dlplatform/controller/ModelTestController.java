@@ -61,6 +61,14 @@ public class ModelTestController {
         return modelTestInfoService.addTestRecord(request);
     }
 
+    /**
+     * 添加检测结果记录
+     */
+    @PostMapping( "/dlplatform/getTestResult")
+    public ResponseVO getTestResult(@RequestBody TestResultParamVO request){
+        return modelTestInfoService.getTestResult(request);
+    }
+
 
     /**
      * 查看检测结果

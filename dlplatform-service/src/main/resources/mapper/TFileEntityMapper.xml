@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dlplatform.mapper.TFileRepository">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.bupt.dlplatform.model.TFileEntity">
+        <result column="id" property="id" />
+        <result column="patch_index" property="patchIndex" />
+        <result column="parent" property="parent" />
+        <result column="name" property="name" />
+        <result column="path" property="path" />
+        <result column="md5" property="md5" />
+        <result column="size" property="size" />
+        <result column="create_time" property="createTime" />
+        <result column="file_id" property="fileId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        patch_index, parent, name, path, md5, size, create_time, file_id
+    </sql>
+
+</mapper>

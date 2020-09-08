@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserLoginApiHystrix implements UserLoginApi {
     private ResponseVO rtn = new ResponseVO<>(ResponseCode.SYSTEM_EXCEPTION);
 
+    /**
+     * 用户登录
+     * @param loginInputVO
+     * @return
+     */
     @Override
     public ResponseVO<TUserEntity> mobileLogin(@RequestBody LoginInputVO loginInputVO) {
         return rtn;

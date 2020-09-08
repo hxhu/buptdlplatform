@@ -37,7 +37,10 @@ public class FtpUtil {
         ftpClient.setControlEncoding("utf-8");
         try {
             log.info("connecting...ftp服务器:"+host+":"+21);
-            ftpClient.connect(host, 21); //连接ftp服务器
+            if(!ftpClient.isConnected()){
+                ftpClient.connect(host, 21);
+            }
+            //ftpClient.connect(host, 21); //连接ftp服务器
             ftpClient.login(username, password); //登录ftp服务器
             int replyCode = ftpClient.getReplyCode(); //是否成功登录服务器
             if(!FTPReply.isPositiveCompletion(replyCode)){

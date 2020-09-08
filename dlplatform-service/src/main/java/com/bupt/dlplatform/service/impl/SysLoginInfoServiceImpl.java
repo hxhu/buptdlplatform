@@ -22,13 +22,21 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
     @Autowired
     private TUserRepository tUserRepository;
 
+    /**
+     * 系统用户登录实现
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO<TUserEntity> mobileLogin(LoginInputVO request) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
 
+            //手机号
             String phoneNo = request.getCellPhone();
+            //密码
             String password = request.getPassword();
+            //用户类型（1--管理员 2--用户）
             String userType_data = request.getUserType();
             String userType = new String();
             if(Integer.parseInt(userType_data)==1) {
@@ -38,6 +46,7 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
                 userType="user";
             }
 
+            //通过手机号查询数据库匹配用户
             List<TUserEntity> list = tUserRepository.selectList
                     (Wrappers.<TUserEntity>lambdaQuery().eq(TUserEntity::getPhoneNumber,phoneNo));
 
@@ -52,9 +61,12 @@ public class SysLoginInfoServiceImpl implements SysLoginInfoService {
                 responseVO.setMsg("密码或者用户类型错误，请重新输入");
                 return responseVO;
             }else {
+                //获取用户名
                 String userName = list.get(0).getUserName();
+                //用户Id
                 String userId =list.get(0).getUserId();
                 TUserEntity returnData = new TUserEntity();
+                //返回信息
                 returnData.setUserName(userName);
                 returnData.setPhoneNumber(phoneNo);
                 returnData.setUserId(userId);

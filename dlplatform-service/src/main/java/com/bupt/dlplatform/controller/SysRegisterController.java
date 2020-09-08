@@ -14,9 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysRegisterController {
     @Autowired
     SysRegisterInfoService sysRegisterInfoService;
+
+    /**
+     * 用户注册
+     * @param request
+     * @return
+     */
     @PostMapping("/dlplatform/register")
     public ResponseVO register(@RequestBody @Validated RegisterInputVO request){
         return sysRegisterInfoService.userRegister(request);
-
     }
+
 }

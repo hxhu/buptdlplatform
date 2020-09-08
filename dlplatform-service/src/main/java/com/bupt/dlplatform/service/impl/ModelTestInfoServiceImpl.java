@@ -39,6 +39,12 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     private  TTestResultRepository tTestResultRepository;
 
     @Autowired
+    private  TConfigRepository tConfigRepository;
+
+    @Autowired
+    private TConfigRecordRepository tConfigRecordRepository;
+
+    @Autowired
     private FtpUtil ftpUtil;
 
     /**
@@ -73,10 +79,10 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     String modelName = tModelRepository.selectOne
                             (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId,modelId)).getModelName();
                     String testsetId = list.get(i).getTestsetId();
-                    String testsetName = tTestsetRepository.selectOne
-                            (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,testsetId)).getTestsetName();
+                    //String testsetName = tTestsetRepository.selectOne
+                            //(Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,testsetId)).getTestsetName();
 
-                    Double threshold = list.get(i).getThreshold();
+                    String threshold = list.get(i).getThreshold();
                     String resultId = list.get(i).getResultId();
 
                     modelTestOutputVO.setTestId(testId);
@@ -86,7 +92,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     modelTestOutputVO.setModelId(modelId);
                     modelTestOutputVO.setModelName(modelName);
                     modelTestOutputVO.setTestsetId(testsetId);
-                    modelTestOutputVO.setTestsetName(testsetName);
+                    //modelTestOutputVO.setTestsetName(testsetName);
                     modelTestOutputVO.setThreshold(threshold);
                     modelTestOutputVO.setResultId(resultId);
 
@@ -152,13 +158,16 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     (Wrappers.<TModelRecordEntity>lambdaQuery().eq(TModelRecordEntity::getUserId,userId));
 
             if (!CollectionUtils.isEmpty(model_list_own)){
-                TModelEntity temp_own;
+
                 //有自己的模型
                 for(int i=0;i<model_list_own.size();i++){
+                    TModelEntity temp_own;
                     String temp_modelId= model_list_own.get(i).getModelId();
                     temp_own=tModelRepository.selectOne
                             (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId,temp_modelId).eq(TModelEntity::getNetwork,network));
-                    model_message.add(temp_own);
+                    if(temp_own!= null){
+                        model_message.add(temp_own);
+                    }
                 }
             }
             //获得通用模型的模型信息
@@ -204,15 +213,19 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
 
             if(!CollectionUtils.isEmpty(testset_list)){
                 List<OptionVO> list_result= new ArrayList<>();
-                OptionVO testsetOption = new OptionVO();
+
                 for(int i=0;i<testset_list.size();i++){
+                    OptionVO testsetOption = new OptionVO();
                     String testsetId = testset_list.get(i).getTestsetId();
                     TTestsetEntity temp_testset=tTestsetRepository.selectOne
                             (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId ,testsetId));
-                    String testsetName= temp_testset.getTestsetName();
-                    testsetOption.setId(testsetId);
-                    testsetOption.setName(testsetName);
-                    list_result.add(testsetOption);
+                    if(temp_testset !=null){
+                        String testsetName= temp_testset.getTestsetName();
+                        testsetOption.setId(testsetId);
+                        testsetOption.setName(testsetName);
+                        list_result.add(testsetOption);
+                    }
+
                 }
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -261,7 +274,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
 
 
     /**
-     * 增加测试记录
+     * 增加测试记录并且得到GPU检测参数
      * @param request
      * @return
      */
@@ -286,6 +299,7 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
                     (Wrappers.<TModelRecordEntity>lambdaQuery().eq(TModelRecordEntity::getModelId,modelId));
             String configID=tModelRecordEntity.getConfigId();
 
+            //获取标签列表
             tTestRecordEntity.setTestId(testId);
             tTestRecordEntity.setTestName(request.getTestName());
             tTestRecordEntity.setTestTime(createTime);
@@ -299,15 +313,56 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             tTestRecordEntity.setTestLabel(request.getLabel());
             tTestRecordRepository.insert(tTestRecordEntity);
 
-            TTestResultEntity tTestResultEntity= runTest(tTestRecordEntity);
-            tTestResultRepository.insert(tTestResultEntity);
 
-            ModelTestOutputVO modelTestOutputVO = new ModelTestOutputVO();
-            modelTestOutputVO.setTestId(testId);
+            //传检测参数-->GPU服务器
+            /**
+             * testId,
+             * resultId,
+             * userId
+             * testnetwork,
+             * testsetpath,
+             * testsetname,
+             * testmodelpath,
+             * testmodelname,
+             * testconfigpath,
+             * testconfigname
+             * testThreshold,
+             * testlabel,
+             */
+
+            String testNetwork = request.getTestNetwork();
+            TTestsetEntity tTestsetEntity = tTestsetRepository.selectOne
+                    (Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,request.getTestsetId()));
+            String testsetName=tTestsetEntity.getTestsetName();
+            String testsetPath=tTestsetEntity.getTestsetLocation();
+            TModelEntity tModelEntity=tModelRepository.selectOne
+                    (Wrappers.<TModelEntity>lambdaQuery().eq(TModelEntity::getModelId,request.getModelId()));
+            String testsetmodelName=tModelEntity.getModelName();
+            String testsetmodelPath=tModelEntity.getModelLocation();
+            TConfigEntity tConfigEntity = tConfigRepository.selectOne
+                    (Wrappers.<TConfigEntity>lambdaQuery().eq(TConfigEntity::getConfigId,configID));
+            String configName = tConfigEntity.getConfigName();
+            String configPath = tConfigEntity.getConfigLocation();
+            String testlabel =request.getLabel();
+            String testThreshold = request.getThreshold();
+
+            TestParamVO testParamVO=new TestParamVO();
+            testParamVO.setUserId(userId);
+            testParamVO.setTestId(testId);
+            testParamVO.setResultId(resultId);
+            testParamVO.setTestNetwork(testNetwork);
+            testParamVO.setTestsetName(testsetName);
+            testParamVO.setTestsetPath(testsetPath);
+            testParamVO.setConfigName(configName);
+            testParamVO.setConfigPath(configPath);
+            testParamVO.setTestThreshold(testThreshold);
+            testParamVO.setTestlabel(testlabel);
+            testParamVO.setTestmodelName(testsetmodelName);
+            testParamVO.setTestmodelPath(testsetmodelPath);
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData(modelTestOutputVO);
+            responseVO.setData(testParamVO);
 
         }catch (Exception e){
             log.error("addTestRecord 异常",e);
@@ -317,26 +372,32 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
     }
 
     /**
-     * 进行检测并且返回result_location
-     * @param tTestRecordEntity
+     * 插入检测结果
+     * @param testResultParamVO
      * @return
      */
-    public TTestResultEntity runTest(TTestRecordEntity tTestRecordEntity){
-        String result_location;
+    public ResponseVO getTestResult(TestResultParamVO testResultParamVO){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        try{
+            TTestResultEntity tTestResultEntity=new TTestResultEntity();
+            tTestResultEntity.setCreateTime(testResultParamVO.getCreateTime());
+            tTestResultEntity.setResultId(testResultParamVO.getResultId());
+            tTestResultEntity.setResultTime(testResultParamVO.getResultTime());
+            tTestResultEntity.setResultLocation(testResultParamVO.getResultLocation());
+            tTestResultEntity.setResultName(testResultParamVO.getResultName());
+            tTestResultRepository.insert(tTestResultEntity);
 
-        Long time =System.currentTimeMillis();
-        Date createTime = new Date(time);
-        /**
-         *获取数据-->调用pyyhon 脚本-->获取返回的result_location
-         */
-        result_location="156801456984113164294368/testset/1571820877383";
-        TTestResultEntity tTestResultEntity=new TTestResultEntity();
-        tTestResultEntity.setCreateTime(createTime);
-        tTestResultEntity.setResultId(tTestRecordEntity.getResultId());
-        tTestResultEntity.setResultTime(createTime);
-        tTestResultEntity.setResultLocation(result_location);
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(testResultParamVO.getResultId()+"检测结果记录插入成功！");
 
-        return tTestResultEntity;
+        }catch (Exception e){
+            log.error("getTestResult 异常",e);
+            responseVO.setData("Have an error for getTestResult！");
+
+        }
+        return responseVO;
+
     }
 
 
@@ -409,6 +470,15 @@ public class ModelTestInfoServiceImpl implements ModelTestInfoService {
             String resultId = tTestRecordEntity.getResultId();
             String resultLoc = tTestResultRepository.selectOne
                     (Wrappers.<TTestResultEntity>lambdaQuery().eq(TTestResultEntity::getResultId,resultId)).getResultLocation();
+            //完整的路径列表
+            /*List<String> listPicName=ftpUtil.getPicName(resultLoc);
+            List<String> picCompPath= new ArrayList<>();
+            for(int i =0;i< listPicName.size();i++){
+                String name = listPicName.get(i);
+                String picpath = resultLoc+"/"+name;
+                picCompPath.add(picpath);
+            }*/
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData(resultLoc);

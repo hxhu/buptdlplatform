@@ -43,7 +43,7 @@ public class TTestRecordEntity {
 
     private String configId;
 
-    private double threshold;
+    private String threshold;
 
     private String testLabel;
 

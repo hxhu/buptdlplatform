@@ -41,11 +41,12 @@ public class TTrainRecordEntity  {
 
     private String configId;
 
-    private String trainTask;
+    private String description;
 
     private String logId;
 
     private String network;
 
+    private String gpus;
 
 }

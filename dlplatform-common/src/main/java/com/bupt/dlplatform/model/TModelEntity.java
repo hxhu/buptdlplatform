@@ -44,6 +44,7 @@ public class TModelEntity {
 
     private String modelLabel;
 
+    private String modelStatus;
 
 
 }

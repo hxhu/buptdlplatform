@@ -32,7 +32,7 @@ public class ModelTestInputVO extends  BaseInputVO {
     private String testsetId;
 
     @ApiModelProperty(value = "阈值")
-    private Double threshold;
+    private String threshold;
 
     @ApiModelProperty(value = "标签")
     private String label;

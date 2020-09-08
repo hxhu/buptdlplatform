@@ -1,22 +1,43 @@
 package com.bupt.dlplatform.util;
 
+import cn.hutool.extra.ftp.Ftp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
 public class FtpUtil {
+    private FTPClient ftpClient;
+    private boolean is_connected;
+
+    public FtpUtil(){
+        ftpClient = new FTPClient();
+        is_connected = false;
+    }
+    public FtpUtil (int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond){
+        ftpClient = new FTPClient();
+        is_connected = false;
+        ftpClient.setDefaultTimeout(defaultTimeoutSecond*1000);
+        ftpClient.setConnectTimeout(connectTimeoutSecond*1000);
+        ftpClient.setDataTimeout(dataTimeoutSecond*1000);
+
+    }
+
     @Value("${ftp.host}")
     private String host;
 
@@ -26,20 +47,33 @@ public class FtpUtil {
     @Value("${ftp.password}")
     private String password;
 
-    private FTPClient ftpClient;
 
     public void initFtpClient() {
-        ftpClient = new FTPClient();
+
         ftpClient.setControlEncoding("utf-8");
         try {
             log.info("connecting...ftp服务器:" + host + ":" + 21);
-            ftpClient.connect(host, 21); //连接ftp服务器
-            ftpClient.login(username, password); //登录ftp服务器
-            int replyCode = ftpClient.getReplyCode(); //是否成功登录服务器
+            if(!ftpClient.isConnected()){
+                ftpClient.connect(host, 21);
+            }
+            //Check response after connection attempt
+            int replyCode = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(replyCode)) {
+                disconnect();
                 log.info("connect failed...ftp服务器:" + host + ":" + 21);
             }
             log.info("connect successful...ftp服务器:" + host + ":" + 21);
+            //Login.
+            if(!ftpClient.login(username, password)){
+                is_connected = false;
+                disconnect();
+                log.info("Can't login to FTP server");
+
+            }else {
+                is_connected=true;
+            }
+            // Set data tramsfer mode.
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -47,52 +81,22 @@ public class FtpUtil {
         }
     }
 
-    /**
-     * 上传文件
-     *
-     * @param pathname       ftp服务保存地址
-     * @param fileName       上传到ftp的文件名
-     * @param originfilename 待上传文件的名称（绝对地址） *
-     * @return
-     */
 
-    public boolean uploadFile(String pathname, String fileName, String originfilename) {
-        boolean flag = false;
-        InputStream inputStream = null;
-        try {
-            log.info("开始上传文件");
-            initFtpClient();
-            inputStream = new FileInputStream(new File(originfilename));
-            ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
-            CreateDirecroty(pathname);
-            ftpClient.makeDirectory(pathname);
-            ftpClient.changeWorkingDirectory(pathname);
-            ftpClient.storeFile(fileName, inputStream);
-            inputStream.close();
-            ftpClient.logout();
-            flag = true;
-            log.info("上传文件成功");
-        } catch (Exception e) {
-            log.info("上传文件失败");
-            e.printStackTrace();
-        } finally {
-            if (ftpClient.isConnected()) {
-                try {
-                    ftpClient.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != inputStream) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    /**
+     * Disconnects from the FTP server
+     */
+    public void disconnect() throws IOException{
+        if(!ftpClient.isConnected()){
+            try{
+                ftpClient.logout();
+                ftpClient.disconnect();
+                is_connected=false;
+            }catch (IOException e){
+
             }
         }
-        return true;
     }
+
 
     /**
      * 上传文件
@@ -139,6 +143,7 @@ public class FtpUtil {
         }
         return flag;
     }
+
 
     //改变目录路径
     public boolean changeWorkingDirectory(String directory) {
@@ -229,8 +234,6 @@ public class FtpUtil {
     /**
      * 下载文件 *
      *
-     * @param pathname  FTP服务器文件目录 *
-     * @param localpath 下载后的文件路径 *
      * @return
      */
     public boolean downloadFile(String pathname, String localpath) {
@@ -239,11 +242,15 @@ public class FtpUtil {
         try {
             log.info("开始下载文件");
             initFtpClient();
+
+            // Use passive mode to pass firewalls.
+            ftpClient.enterLocalPassiveMode();
+
             ftpClient.changeWorkingDirectory(pathname);
             FTPFile[] ftpFiles = ftpClient.listFiles();
             for (FTPFile file : ftpFiles) {
                 File localFile = new File(localpath + "/" + file.getName());
-                os = new FileOutputStream(localFile);
+                os = new BufferedOutputStream(new FileOutputStream(localFile));
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
                 ftpClient.retrieveFile(file.getName(), os);
                 os.close();
@@ -313,14 +320,31 @@ public class FtpUtil {
      * @param picName
      * @return
      */
-    public InputStream getPicStream(String resultpath, String picName){
+
+    public byte[] getPicStream(String resultpath, String picName){
         try{
             log.info("开始获取图片数据流");
             initFtpClient();
             InputStream image=null;
-            ftpClient.changeWorkingDirectory(resultpath);
-            image = ftpClient.retrieveFileStream(picName);
-            return image;
+            //String dir = new String(resultpath.getBytes("GBK"), "iso-8859-1");
+            if(!ftpClient.changeWorkingDirectory(resultpath)){
+                log.info("切换目录失败"+resultpath);
+            }
+            // 一定要加上字符集指定，因为获取文件时有中文，会出现乱码而获取不到。
+            String fileName = new String(picName.getBytes("GBK"), "iso-8859-1");
+            ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
+            // 每次数据连接之前，ftp client告诉ftp server开通一个端口来传输数据，ftp server可能每次开启不同的端口来传输数据，
+            // 但是在Linux上，由于安全限制，可能某些端口没有开启，所以就出现阻塞。
+            ftpClient.enterLocalPassiveMode();
+            image = ftpClient.retrieveFileStream(fileName);
+
+            byte[] bytes = IOUtils.toByteArray(image);
+            if (image != null) {
+                image.close();
+            }
+            ftpClient.completePendingCommand();
+
+            return bytes;
         }catch (Exception e){
             log.info("读取图片流失败");
             e.printStackTrace();
@@ -337,6 +361,55 @@ public class FtpUtil {
         return null;
     }
 
+    public List<Map<String, byte[]>> getPicMap(String picpath) {
+
+        List<Map<String, byte[]>> picList = new ArrayList<>();
+
+        try{
+            log.info("开始获取图片列表");
+            initFtpClient();
+            if(!ftpClient.changeWorkingDirectory(picpath)){
+                log.info("切换目录失败"+picpath);
+            }
+            ftpClient.changeWorkingDirectory(picpath);
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            for(FTPFile file : ftpFiles){
+                InputStream image=null;
+                Map<String, byte[]> picMap = new HashMap<String, byte[]>();
+                String filename = file.getName();
+                ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
+                // 每次数据连接之前，ftp client告诉ftp server开通一个端口来传输数据，ftp server可能每次开启不同的端口来传输数据，
+                // 但是在Linux上，由于安全限制，可能某些端口没有开启，所以就出现阻塞。
+                ftpClient.enterLocalPassiveMode();
+                image = ftpClient.retrieveFileStream(filename);
+                byte[] bytes = IOUtils.toByteArray(image);
+
+                picMap.put(filename,bytes);
+                picList.add(picMap);
+                if (image != null) {
+                    image.close();
+                }
+                ftpClient.completePendingCommand();
+                log.info(String.valueOf(ftpClient.getReplyCode()));
+            }
+
+        } catch (Exception e){
+            log.info("读取图片流失败");
+            e.printStackTrace();
+        }finally {
+            if(ftpClient.isConnected()){
+                try{
+                    ftpClient.disconnect();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return picList;
+    }
+
+
     /**
      *
      * @param directory
@@ -351,9 +424,13 @@ public class FtpUtil {
             ftpClient.changeWorkingDirectory(directory);
 
             FTPFile[] ftpFiles = ftpClient.listFiles();
+
             String filename = ftpFiles[0].getName();
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
             image = ftpClient.retrieveFileStream(filename);
-            ftpClient.logout();
+            //ftpClient.logout();
+            ftpClient.disconnect();
             return image;
         } catch (Exception e) {
             log.info("读取图片流失败");
@@ -407,5 +484,7 @@ public class FtpUtil {
 
         return listpath;
     }
+
+
 }
 

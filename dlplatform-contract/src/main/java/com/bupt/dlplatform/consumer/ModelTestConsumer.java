@@ -51,6 +51,13 @@ public interface ModelTestConsumer {
     ResponseVO addTestRecord(@RequestBody @Validated ModelTestInputVO modelTestInputVO);
 
     /**
+     * 添加检测结果记录
+     *
+     */
+    @RequestMapping(value = "/dlplatform/getTestResult",method = RequestMethod.POST)
+    ResponseVO getTestResult(@RequestBody TestResultParamVO testResultParamVO);
+
+    /**
      * 查看检测结果
      */
     @RequestMapping(value = "/dlplatform/searchTestResult",method = RequestMethod.POST)

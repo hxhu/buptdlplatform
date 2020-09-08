@@ -15,12 +15,13 @@
         <result column="model_location" property="modelLocation" />
         <result column="model_common" property="modelCommon" />
         <result column="model_label" property="modelLabel"/>
+        <result column="model_status" property="modelStatus"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        model_id, model_name, model_time, network, create_time, update_time, task, model_location, model_common
+        model_id, model_name, model_time, network, create_time, update_time, task, model_location, model_common, model_label, model_status
     </sql>
 
 </mapper>

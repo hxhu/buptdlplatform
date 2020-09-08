@@ -39,9 +39,9 @@ public class TrainsetInfoServiceImpl implements TrainsetInfoService {
                     (Wrappers.<TTrainsetRecordEntity>lambdaQuery().eq(TTrainsetRecordEntity::getUserId,userId));
 
             if (CollectionUtils.isEmpty(list)) {
-                //判断用户是否有测试集上传记录
+                //判断用户是否有训练集上传记录
                 responseVO.setCode(ResponseCode.RECORD_NULL.value());
-                responseVO.setMsg("用户还没有上传任何测试集！");
+                responseVO.setMsg("用户还没有上传任何训练集！");
                 return responseVO;
             }else {
                 List<TTrainsetEntity> list_data = new ArrayList<TTrainsetEntity>();
@@ -59,6 +59,35 @@ public class TrainsetInfoServiceImpl implements TrainsetInfoService {
             log.error("SearchTrainsetRecord 异常", e);
             return responseVO;
         }
+    }
+
+
+    /**
+     * 删除训练集
+     * @param request
+     * @return
+     */
+    @Override
+    public ResponseVO deleteTrainset(TrainsetInputVO request){
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        try {
+            String trainsetId=request.getTrainsetId();
+            int rows= tTrainsetRepository.delete(Wrappers.<TTrainsetEntity>lambdaQuery().eq(TTrainsetEntity::getTrainsetId,trainsetId));
+            int rows_record = tTrainsetRecordRepository.delete(Wrappers.<TTrainsetRecordEntity>lambdaQuery().eq(TTrainsetRecordEntity::getTrainsetId,trainsetId));
+            if(rows==1 && rows_record==1){
+                responseVO.setCode(ResponseCode.OK.value());
+                responseVO.setMsg(ResponseCode.OK.getDescription());
+                responseVO.setData("训练集删除成功");
+
+            }else{
+                responseVO.setCode(ResponseCode.OPERATE_ERROR.value());
+                responseVO.setMsg(ResponseCode.OPERATE_ERROR.getDescription());
+                log.error("deleteTrainset异常");
+            }
+        }catch (Exception e){
+            log.error("deleteTrainset异常");
+        }
+        return responseVO;
     }
 
 }

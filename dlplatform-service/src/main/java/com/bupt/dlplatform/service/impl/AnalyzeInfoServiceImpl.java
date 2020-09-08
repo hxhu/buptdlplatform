@@ -56,7 +56,7 @@ public class AnalyzeInfoServiceImpl implements AnalyzeInfoService {
                 return responseVO;
             }else {
                 List<AnalyzeOutputVO> list_output = new ArrayList<>();
-                AnalyzeOutputVO one_output = new AnalyzeOutputVO();
+
                 TTrainRecordEntity tTrainRecordEntity =new TTrainRecordEntity();
                 for (int i = 0; i < list.size(); i++) {
                     String analyseRecordId = list.get(i).getAnalyseRecordId();
@@ -66,9 +66,11 @@ public class AnalyzeInfoServiceImpl implements AnalyzeInfoService {
                     String type=list.get(i).getAnalyseClass();
                     String trainId=list.get(i).getTrainId();
 
+
                     tTrainRecordEntity=tTrainRecordRepository.selectOne(Wrappers.<TTrainRecordEntity>lambdaQuery().eq(TTrainRecordEntity::getTrainId,trainId));
                     String trainName = tTrainRecordEntity.getTrainName();
                     String network =tTrainRecordEntity.getNetwork();
+                    AnalyzeOutputVO one_output = new AnalyzeOutputVO();
                     one_output.setAnalyzeRecordId(analyseRecordId);
                     one_output.setAnalyzeRecordName(analyseRecordName);
                     one_output.setAnalyzeRecordTime(analyseRecordTime);

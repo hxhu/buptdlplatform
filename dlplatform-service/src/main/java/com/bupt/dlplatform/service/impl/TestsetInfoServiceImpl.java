@@ -52,6 +52,7 @@ public class TestsetInfoServiceImpl implements TestsetInfoService {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
 
+            //获取用户Id -->直接通过token解析得到的
             String userId = request.getUserId();
 
             List<TTestsetRecordEntity> list = tTestsetRecordRepository.selectList
@@ -66,16 +67,19 @@ public class TestsetInfoServiceImpl implements TestsetInfoService {
                 List<TestsetOutputVO> list_data = new ArrayList<>();
                 for(int i=0;i<list.size();i++){
                     String testsetId= list.get(i).getTestsetId();
-                    TTestsetEntity tTestsetEntity= tTestsetRepository.selectOne(Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId,testsetId));
-                    String testsetName = tTestsetEntity.getTestsetName();
-                    Date uploadTime = tTestsetEntity.getTestsetTime();
-                    String description =tTestsetEntity.getDescription();
-                    TestsetOutputVO record= new TestsetOutputVO();
-                    record.setTestsetId(testsetId);
-                    record.setTestsetName(testsetName);
-                    record.setUploadTime(uploadTime);
-                    record.setDescription(description);
-                    list_data.add(record);
+                    if(testsetId== null) continue;
+                    else {
+                        TTestsetEntity tTestsetEntity = tTestsetRepository.selectOne(Wrappers.<TTestsetEntity>lambdaQuery().eq(TTestsetEntity::getTestsetId, testsetId));
+                        String testsetName = tTestsetEntity.getTestsetName();
+                        Date uploadTime = tTestsetEntity.getTestsetTime();
+                        String description = tTestsetEntity.getDescription();
+                        TestsetOutputVO record = new TestsetOutputVO();
+                        record.setTestsetId(testsetId);
+                        record.setTestsetName(testsetName);
+                        record.setUploadTime(uploadTime);
+                        record.setDescription(description);
+                        list_data.add(record);
+                    }
                 }
                 responseVO.setCode(ResponseCode.OK.value());
                 responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -88,27 +92,44 @@ public class TestsetInfoServiceImpl implements TestsetInfoService {
         }
     }
 
+
+
     /**
-     * 上传测试集
-     * @param testsetTempVO
+     * 上传检测集--数据库更新
+     * @param
      * @return
      */
     @Override
-    public ResponseVO uploadTestsetFile(TestsetTempVO testsetTempVO){
+    public ResponseVO uploadTestsetComp( String userId,
+                                         Date uploadTime,
+                                         String testsetId,
+                                         String testsetName,
+                                         Double size,
+                                         String pathName,
+                                         String description){
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
-            //增加一条记录，部分字段
+            //增加一条Testset记录
             TTestsetEntity tTestsetEntity=new TTestsetEntity();
-            tTestsetEntity.setCreateTime(testsetTempVO.getUploadTime());
-            tTestsetEntity.setTestsetId(testsetTempVO.getTestsetId());
-            tTestsetEntity.setTestsetSize(testsetTempVO.getSize());
-            tTestsetEntity.setTestsetTime(testsetTempVO.getUploadTime());
-            tTestsetEntity.setTestsetLocation(testsetTempVO.getPathname());
+            tTestsetEntity.setCreateTime(uploadTime);
+            tTestsetEntity.setTestsetId(testsetId);
+            tTestsetEntity.setTestsetSize(size);
+            tTestsetEntity.setTestsetTime(uploadTime);
+            tTestsetEntity.setTestsetLocation(pathName);
+            tTestsetEntity.setTestsetName(testsetName);
+            tTestsetEntity.setDescription(description);
             tTestsetRepository.insert(tTestsetEntity);
 
+            //增加tTestsetRecord记录
+            TTestsetRecordEntity tTestsetRecordEntity =new TTestsetRecordEntity();
+            tTestsetRecordEntity.setCreateTime(uploadTime);
+            tTestsetRecordEntity.setUserId(userId);
+            tTestsetRecordEntity.setTestsetId(testsetId);
+            tTestsetRecordRepository.insert(tTestsetRecordEntity);
+
             TestsetOutputVO testsetOutputVO=new TestsetOutputVO();
-            testsetOutputVO.setUserId(testsetTempVO.getUserId());
-            testsetOutputVO.setTestsetId(testsetTempVO.getTestsetId());
+            testsetOutputVO.setUserId(userId);
+            testsetOutputVO.setTestsetId(testsetId);
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData(testsetOutputVO);
@@ -122,46 +143,6 @@ public class TestsetInfoServiceImpl implements TestsetInfoService {
 
     }
 
-    //更新测试集记录和测试集表
-    @Override
-    public ResponseVO<TestsetOutputVO> addTestset(TestsetInputVO request){
-        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
-        try {
-            String userId= request.getUserId();
-            String testsetId = request.getTestsetId();
-            String testsetName =request.getTestsetName();
-            Long time =System.currentTimeMillis();
-            Date createTime = new Date(time);
-            String description = request.getDescription();
-
-            //更新记录 testsetName, description 两个字段
-            TTestsetEntity tTestsetEntity=new TTestsetEntity();
-            tTestsetEntity.setUpdateTime(createTime);
-            tTestsetEntity.setTestsetId(testsetId);
-            tTestsetEntity.setTestsetName(testsetName);
-            tTestsetEntity.setDescription(description);
-            tTestsetRepository.update(tTestsetEntity,Wrappers.<TTestsetEntity>lambdaUpdate().eq(TTestsetEntity::getTestsetId,testsetId));
-
-
-            //增加tTestsetRecord记录
-            TTestsetRecordEntity tTestsetRecordEntity =new TTestsetRecordEntity();
-            tTestsetRecordEntity.setCreateTime(createTime);
-            tTestsetRecordEntity.setUserId(userId);
-            tTestsetRecordEntity.setTestsetId(testsetId);
-            tTestsetRecordRepository.insert(tTestsetRecordEntity);
-
-            TestsetOutputVO testsetOutputVO = new TestsetOutputVO();
-            testsetOutputVO.setTestsetId(testsetId);
-            responseVO.setCode(ResponseCode.OK.value());
-            responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData(testsetOutputVO);
-            return responseVO;
-
-        }catch (Exception e){
-            log.error("uploadTestset 异常", e);
-            return responseVO;
-        }
-    }
 
     /**
      * 删除测试集

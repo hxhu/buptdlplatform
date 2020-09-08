@@ -57,7 +57,7 @@ public class ModelRecordInfoServiceImpl implements ModelRecordInfoService {
                 List<ModelRecordOutputVO> res = new ArrayList<>();
                 TModelEntity eachModelRecord = new TModelEntity();
                 TTrainRecordEntity train_data =new TTrainRecordEntity();
-                ModelRecordOutputVO eachOutputRecord = new ModelRecordOutputVO();
+
                 Date createTime;
                 String modelId;
                 String modelName;
@@ -74,7 +74,7 @@ public class ModelRecordInfoServiceImpl implements ModelRecordInfoService {
                     modelName =eachModelRecord.getModelName();
                     createTime = eachModelRecord.getCreateTime();
                     task = eachModelRecord.getTask();
-
+                    ModelRecordOutputVO eachOutputRecord = new ModelRecordOutputVO();
                     eachOutputRecord.setCreateTime(createTime);
                     eachOutputRecord.setModelId(modelId);
                     eachOutputRecord.setModelName(modelName);

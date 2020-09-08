@@ -14,4 +14,6 @@ public class TestsetTempVO extends BaseInputVO{
     String testsetId;
     Double size;
     String pathname;
+    String description;
+    String testsetName;
 }

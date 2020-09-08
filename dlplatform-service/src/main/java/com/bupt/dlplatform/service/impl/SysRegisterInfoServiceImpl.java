@@ -21,13 +21,22 @@ public class SysRegisterInfoServiceImpl implements SysRegisterInfoService {
     @Autowired
     private TUserRepository tUserRepository;
 
+    /**
+     * 用户注册实现
+     * @param request
+     * @return
+     */
     @Override
     public ResponseVO<TUserEntity> userRegister(RegisterInputVO request) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
         try {
+            //姓名
             String userName = request.getUserName();
+            //手机号
             String phoneNo = request.getCellPhone();
+            //密码
             String password = request.getPassword();
+            //用户类型
             String userType = "user";
             /*判断信息填写是否完整*/
             if(userName.isEmpty() || phoneNo.isEmpty() || password.isEmpty()){

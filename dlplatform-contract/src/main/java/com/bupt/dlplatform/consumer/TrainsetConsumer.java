@@ -13,6 +13,10 @@ import java.util.List;
 
 @FeignClient(value = "service-producer-dlplatform",fallback = TrainsetApiHystrix.class)
 public interface TrainsetConsumer {
+
     @RequestMapping(value = "/dlplatform/searchTrainset", method = RequestMethod.POST)
     ResponseVO<List<TTrainsetEntity>> searchTrainset(TrainsetInputVO trainsetInputVO);
+
+    @RequestMapping(value = "/dlplatform/deleteTrainset", method = RequestMethod.POST)
+    ResponseVO deleteTrainset(TrainsetInputVO request);
 }

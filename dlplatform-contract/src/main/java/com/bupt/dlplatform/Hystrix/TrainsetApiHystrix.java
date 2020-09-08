@@ -21,4 +21,9 @@ public class TrainsetApiHystrix implements TrainsetConsumer {
         return rtn;
     }
 
+    @Override
+    public ResponseVO deleteTrainset(TrainsetInputVO request) {
+        return rtn;
+    }
+
 }

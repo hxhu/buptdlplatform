@@ -13,8 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @FeignClient(value = "service-producer-dlplatform",fallback = TestsetApiHystrix.class)
@@ -23,11 +25,16 @@ public interface TestsetConsumer {
     @RequestMapping(value = "/dlplatform/searchTestset", method = RequestMethod.POST)
     ResponseVO<List<TestsetOutputVO>> searchTestset(TestsetInputVO testsetInputVO);
 
-    @RequestMapping(value = "/dlplatform/uploadTestSet", method = RequestMethod.POST)
-    ResponseVO uploadTestSet(TestsetTempVO testsetTempVO);
 
-    @RequestMapping(value = "/dlplatform/addTestset", method = RequestMethod.POST)
-    ResponseVO<TestsetOutputVO> addTestset( TestsetInputVO request);
+    @RequestMapping(value = "/dlplatform/uploadComplete", method = RequestMethod.POST)
+    ResponseVO uploadTestsetComp(@RequestParam("userId") String userId,
+                             @RequestParam("uploadTime") Date uploadTime,
+                             @RequestParam("testsetId") String testsetId,
+                             @RequestParam("testsetname") String testsetName,
+                             @RequestParam("size") Double size,
+                             @RequestParam("pathName") String pathName,
+                             @RequestParam("Description") String description);
+
 
     @RequestMapping(value = "/dlplatform/deleteTestset", method = RequestMethod.POST)
     ResponseVO deleteTestset(TestsetInputVO request);

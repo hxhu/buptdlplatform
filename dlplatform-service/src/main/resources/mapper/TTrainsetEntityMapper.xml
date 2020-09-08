@@ -10,11 +10,11 @@
         <result column="trainset_id" property="trainsetId" />
         <result column="trainset_name" property="trainsetName" />
         <result column="trainset_time" property="trainsetTime" />
-        <result column="trainset_size" property="trainsetSize" />
+        <result column="class_num" property="classNum" />
         <result column="trainset_location" property="trainsetLocation" />
         <result column="trainset_common" property="trainsetCommon" />
         <result column="trainset_type" property="trainsetType" />
-        <result column="trainset_task" property="trainsetTask" />
+        <result column="description" property="description" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

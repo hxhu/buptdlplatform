@@ -30,7 +30,7 @@ public class ModelTestOutputVO extends BaseInputVO {
     @ApiModelProperty(value = "检测集名")
     private String testsetName;
     @ApiModelProperty(value = "阈值")
-    private  Double threshold;
+    private  String threshold;
     @ApiModelProperty(value = "检测结果Id")
     private String resultId;
 }

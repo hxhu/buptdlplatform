@@ -170,7 +170,7 @@ public class AnalyzeController {
                 // 得到编码后的图片对象
                 BufferedImage image = decoder.decodeAsBufferedImage();
                 OutputStream out = response.getOutputStream();
-                ImageIO.write(image, "png", out);
+                ImageIO.write(image, "jpg", out);
                 imageIn.close();// 关闭文件流
                 image.flush();
                 out.flush();
@@ -207,7 +207,7 @@ public class AnalyzeController {
     }
 
     @RequestMapping(value = "/dlplatform/deleteAnalyze",method = RequestMethod.POST)
-    public ResponseVO deleteAnalyze( @Validated AnalyzeInputVO analyzeInputVO){
+    public ResponseVO deleteAnalyze(@RequestBody @Validated AnalyzeInputVO analyzeInputVO){
         ResponseVO responseVO = new ResponseVO(ResponseCode.PARAM_INVALID);
         try{
             ResponseVO res=analyzeConsumer.deleteAnalyze(analyzeInputVO);

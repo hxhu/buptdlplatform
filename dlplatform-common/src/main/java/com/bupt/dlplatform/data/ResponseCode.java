@@ -9,6 +9,7 @@ public enum ResponseCode {
     //通用
     OK(2000, "Success"),
     PARAM_INVALID(1000, "缺失参数或无效"),
+    FAIL(2020,"Fail to operate"),
     //熔断专用
     REMOTE_CALL_FAIL(5000, "服务暂时不可用:"),
     UNKNOWN_EXCEPTION(505, "系统异常"),
@@ -40,8 +41,11 @@ public enum ResponseCode {
     AUTH_ACCESS_DENIED(4003, "没有权限"),
     JSON_ERROR(5001,"JSON操作异常"),
 
-    RECORD_NULL(5510,"没有数据记录");
+    RECORD_NULL(5510,"没有数据记录"),
 
+    CONNECT_SUCCESS(5555,"FTP连接成功"),
+    DISCONNECT_SUCCESS(5554,"FTP断开成功"),
+    FTP_FAILED(5556,"FTP失败");
 
     private final int value;
     private final String description;

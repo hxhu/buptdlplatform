@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "service-producer-dlplatform", fallback = UserLoginApiHystrix.class)
 public interface UserLoginApi {
 
+    /**
+     * 用户登录
+     * @param loginInputVO
+     * @return
+     */
     @RequestMapping(value = "/dlplatform/login",method = RequestMethod.POST)
     ResponseVO<TUserEntity> mobileLogin(@RequestBody LoginInputVO loginInputVO);
 

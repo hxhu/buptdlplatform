@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -26,15 +27,13 @@ public class TestsetApiHystrix implements TestsetConsumer {
         return rtn;
     }
 
+
     @Override
-    public ResponseVO uploadTestSet(TestsetTempVO testsetTempVO) {
+    public ResponseVO uploadTestsetComp(String userId, Date uploadTime, String testsetId, String testsetName, Double size,
+                                        String pathName, String description){
         return rtn;
     }
 
-    @Override
-    public ResponseVO<TestsetOutputVO> addTestset(TestsetInputVO request) {
-        return rtn;
-    }
 
     @Override
     public ResponseVO deleteTestset(TestsetInputVO request) {
