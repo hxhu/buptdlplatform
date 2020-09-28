@@ -1,43 +1,17 @@
 package com.bupt.dlplatform;
 
-/**
- * Created by huhx on 2020/9/21
- */
-
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.log4j.Logger;
+
 import java.util.Properties;
 
 /**
- * 发布消息的回调类
- *
- * 必须实现MqttCallback的接口并实现对应的相关接口方法CallBack 类将实现 MqttCallBack。
- * 每个客户机标识都需要一个回调实例。在此示例中，构造函数传递客户机标识以另存为实例数据。
- * 在回调中，将它用来标识已经启动了该回调的哪个实例。
- * 必须在回调类中实现三个方法：
- *
- *  public void messageArrived(MqttTopic topic, MqttMessage message)接收已经预订的发布。
- *
- *  public void connectionLost(Throwable cause)在断开连接时调用。
- *
- *  public void deliveryComplete(MqttDeliveryToken token))
- *  接收到已经发布的 QoS 1 或 QoS 2 消息的传递令牌时调用。
- *  由 MqttClient.connect 激活此回调。
- *
+ * Created by huhx on 2020/9/28
  */
-public class PushCallback implements MqttCallback {
-//            logger.info("info");
-//        logger.warn("warn");
-//        logger.error("error");
-    private static final Logger logger = Logger.getLogger(PushCallback.class);
-    Properties properties = new Properties();
-
-    public PushCallback(){
+public class KafKaProducer {
+    public void createKafKaProducer(){
+        Properties properties = new Properties();
         //broker的地址清单，建议至少填写两个，避免宕机
         properties.put("bootstrap.servers", "127.0.0.1:9092");
 
@@ -72,34 +46,22 @@ public class PushCallback implements MqttCallback {
         // max.block.ms：该参数指定了在调用 send（）方法或使用 partitionsFor（）方法获取元数据时生产者阻塞时间
         // max.request.size：该参数用于控制生产者发送的请求大小。
         //receive.buffer.bytes和send.buffer.bytes：指定了 TCP socket 接收和发送数据包的缓冲区大小，默认值为-1
-        logger.info("Create Kafka Producer Sucessful");
-    }
-
-    public void connectionLost(Throwable cause) {
-
-        // 连接丢失后，一般在这里面进行重连
-        System.out.println("disconnect");
-    }
-
-    public void deliveryComplete(IMqttDeliveryToken token) {
-        System.out.println("deliveryComplete---------" + token.isComplete());
-    }
-
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
-        // subscribe后得到的消息会执行到这里面
-//        System.out.println("接收消息主题 : " + topic);
-//        System.out.println("接收消息Qos : " + message.getQos());
-//        System.out.println("接收消息内容 : " + new String(message.getPayload()));
-        if( !message.isRetained() ){
-            String payload = new String(message.getPayload());
-            logger.info("||MQTT recieve|| " + "<topic> " + topic + " <message> " + payload);
-
-            // produce to kafka
-            Producer<String, String> producer = null;
+        Producer<String, String> producer = null;
+        try {
             producer = new KafkaProducer<>(properties);
-            producer.send(new ProducerRecord<String, String>("mqtt", payload));
-            logger.info("||Send to kafka|| " + payload);
+            for (int i = 0; i < 10; i++) {
+                String msg = "mqtt message";
+                producer.send(new ProducerRecord<String, String>("mqtt", msg));
+                Thread.sleep(500);
+                System.out.println("Sent:" + msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
             producer.close();
         }
+
     }
 }
+

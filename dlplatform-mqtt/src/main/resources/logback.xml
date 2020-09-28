@@ -1,0 +1,4 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    　 <!-- 屏蔽kafka debug -->
+    <logger name="org.apache.kafka" level="OFF" />
+</configuration>
