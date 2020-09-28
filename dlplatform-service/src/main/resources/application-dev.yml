@@ -11,6 +11,9 @@ spring:
       connectionTestQuery: SELECT 1
       maximum-pool-size: 50
       minimum-idle: 10
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/dlplatform
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
