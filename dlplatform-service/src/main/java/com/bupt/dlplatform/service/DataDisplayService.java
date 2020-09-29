@@ -1,6 +1,6 @@
 package com.bupt.dlplatform.service;
 
-import com.bupt.dlplatform.vo.AnalyzeInputVO;
+import com.bupt.dlplatform.model.MDataEntity;
 import com.bupt.dlplatform.vo.ResponseVO;
 
 /**
@@ -8,7 +8,22 @@ import com.bupt.dlplatform.vo.ResponseVO;
  */
 public interface DataDisplayService {
     /**
-     * 保存数据
+     * 新建数据
      */
-    public ResponseVO saveData();
+    public ResponseVO createMDataEntity();
+
+    /**
+     * 更新数据
+     */
+    public ResponseVO updateMDataEntity();
+
+    /**
+     * 读取一条数据（Id方式）
+     */
+    public ResponseVO<MDataEntity> getMDataEntityById();
+
+    /**
+     * 删除数据
+     */
+    public ResponseVO daleteMDataEntity();
 }

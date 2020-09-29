@@ -1,7 +1,6 @@
 package com.bupt.dlplatform.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,6 +11,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "m_data_entity")
 public class MDataEntity {
 
@@ -20,9 +22,9 @@ public class MDataEntity {
 
     private String name;
 
-    private Long create_timestamp;
+    private Long createTimestamp;
 
-    private Long last_timestamp;
+    private Long lastTimestamp;
 
     private String type;
 

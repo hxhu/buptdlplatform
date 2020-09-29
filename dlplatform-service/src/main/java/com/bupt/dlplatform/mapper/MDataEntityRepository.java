@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Created by huhx on 2020/9/28
  */
 @Repository
-public interface MDataEntityRepository extends MongoRepository<MDataEntity,Long> {
+public interface MDataEntityRepository extends MongoRepository<MDataEntity,String> {
 }

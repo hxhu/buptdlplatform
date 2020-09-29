@@ -15,6 +15,12 @@ spring:
     mongodb:
       uri: mongodb://127.0.0.1:27017/dlplatform
 
+#app 全局唯一id生成
+app:
+  idGenerator:
+    workerId: 1
+    datacenterId: 0
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   #实体扫描,多个package用逗号或者分号分隔
