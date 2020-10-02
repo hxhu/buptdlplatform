@@ -1,34 +1,37 @@
 package com.bupt.dlplatform.model;
 
 import lombok.*;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 /**
- * Created by huhx on 2020/9/28
+ * Created by huhx on 2020/10/2
  */
+
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "m_data_entity")
-public class MDataEntity<T> {
+@Document(collection = "m_display_entity")
+public class MDisplayEntity<T> {
     @Id
     private String id;
 
     private String name;
 
+    private String desc;
+
+    private String type; // list,figure,picture,video,map,heartbeat
+
+    private T configs;
+
+    private String dataId;
+
     private Long createTimestamp;
 
     private Long lastTimestamp;
 
-    private String type; // list,figure,picture,video,map,heartbeat
-
-    private T value;
-
     private Boolean isDeleted;
-
 }
