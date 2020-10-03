@@ -42,7 +42,7 @@ public class MDeviceEntity {
     // collect收集数据
     private Boolean collectFlag;
 
-    private String lastCollectTime;
+    private Long lastCollectTime;
 
 
     private Boolean isDeleted;

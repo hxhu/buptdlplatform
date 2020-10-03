@@ -24,5 +24,7 @@ public class MMonitorEntity {
 
     private String mapId;
 
+    private Long createTimestamp;
+
     private Boolean isDeleted;
 }

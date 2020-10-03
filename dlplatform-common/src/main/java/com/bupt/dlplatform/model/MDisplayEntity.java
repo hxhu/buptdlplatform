@@ -31,7 +31,5 @@ public class MDisplayEntity<T> {
 
     private Long createTimestamp;
 
-    private Long lastTimestamp;
-
     private Boolean isDeleted;
 }
