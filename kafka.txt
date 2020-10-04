@@ -6,3 +6,5 @@ kafka启动          .\bin\windows\kafka-server-start.bat .\config\server.proper
 kafka监听         kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic mqtt --from-beginning
 
 kafka生产         kafka-console-producer.bat --broker-list localhost:9092 --topic mqtt
+
+{"id": "N1312003955798052864","deviceId":"N1311344863756685312","type": "list","value": "add"}

@@ -31,4 +31,10 @@ public class MDataEntityInputVO {
 
     @ApiModelProperty(value ="值")
     private Object value;  //  这里是一个值
+
+    public MDataEntityInputVO( KafKaConsumerVO kafKaConsumerVO){
+        setId( kafKaConsumerVO.getId() );
+        setValue( kafKaConsumerVO.getValue() );
+    }
+
 }
