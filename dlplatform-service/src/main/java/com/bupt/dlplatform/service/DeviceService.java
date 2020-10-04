@@ -2,6 +2,8 @@ package com.bupt.dlplatform.service;
 
 import com.bupt.dlplatform.vo.*;
 
+import java.util.ArrayList;
+
 /**
  * Created by huhx on 2020/10/3
  */
@@ -20,6 +22,11 @@ public interface DeviceService {
      * 读取一个设备（Id方式）
      */
     public ResponseVO<MDeviceEntityOutputVO> getMDeviceEntityById(String id);
+
+    /**
+     * 根据UserID返回设备列表
+     */
+    public ResponseVO<ArrayList<MDeviceEntityOutputVO>> getMDeviceEntityByUserId(String userId);
 
     /**
      * 删除设备

@@ -179,6 +179,36 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     /**
+     * 根据UserID返回设备列表
+     */
+    public ResponseVO<ArrayList<MDeviceEntityOutputVO>> getMDeviceEntityByUserId(String userId){
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            ArrayList<MDeviceEntity> srcList = mDeviceEntityRepository.findByUserId(userId); //"N1310975139973697536"
+            if( srcList == null ){
+                throw new ServiceException("未找到该数据");
+            }
+
+            ArrayList<MDeviceEntityOutputVO> destList = new ArrayList<MDeviceEntityOutputVO>();
+            for( MDeviceEntity i : srcList ){
+                destList.add( new MDeviceEntityOutputVO(i) );
+            }
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(destList);
+            return responseVO;
+        }catch( ServiceException e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }
+    }
+
+    /**
      * 删除设备
      */
     @Override
