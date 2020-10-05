@@ -46,8 +46,16 @@ public class DeviceController {
      * 根据用户名找到设备列表
      */
     @GetMapping("/getListByUserId")
-    public ResponseVO<ArrayList<MDeviceEntityOutputVO>> getMDeviceEntityByUserId(String userId){
+    public ResponseVO<ArrayList<MDeviceEntityOutputVO>> getMDeviceEntityByUserId(@RequestParam(value = "userId")String userId){
         return deviceService.getMDeviceEntityByUserId(userId);
+    }
+
+    /*
+     * 根据设备ID找到数据列表
+     */
+    @GetMapping("/getDataByDeviceId")
+    public ResponseVO<ArrayList<MDataEntityOutputVO>> getMDataEntityByDeviceId(@RequestParam(value = "deviceId")String deviceId){
+        return deviceService.getMDataEntityByDeviceId(deviceId);
     }
 
     /**

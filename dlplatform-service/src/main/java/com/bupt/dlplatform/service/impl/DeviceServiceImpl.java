@@ -2,6 +2,7 @@ package com.bupt.dlplatform.service.impl;
 
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
+import com.bupt.dlplatform.mapper.MDataEntityRepository;
 import com.bupt.dlplatform.mapper.MDeviceEntityRepository;
 import com.bupt.dlplatform.mapper.MDisplayEntityRepository;
 import com.bupt.dlplatform.model.MDataEntity;
@@ -9,17 +10,16 @@ import com.bupt.dlplatform.model.MDeviceEntity;
 import com.bupt.dlplatform.model.MDisplayEntity;
 import com.bupt.dlplatform.service.DeviceService;
 import com.bupt.dlplatform.util.IdGenerator;
-import com.bupt.dlplatform.vo.MDeviceEntityInputVO;
-import com.bupt.dlplatform.vo.MDeviceEntityOutputVO;
-import com.bupt.dlplatform.vo.MDisplayEntityOutputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
+import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by huhx on 2020/10/3
@@ -32,6 +32,12 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private MDeviceEntityRepository mDeviceEntityRepository;
+
+    @Autowired
+    private MDisplayEntityRepository mDisplayEntityRepository;
+
+    @Autowired
+    private MDataEntityRepository mDataEntityRepository;
 
     /**
      * 新建设备
@@ -198,6 +204,75 @@ public class DeviceServiceImpl implements DeviceService {
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData(destList);
+            return responseVO;
+        }catch( ServiceException e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }
+    }
+
+    /**
+     * 根据设备ID找到数据列表
+     */
+    @Override
+    public ResponseVO<ArrayList<MDataEntityOutputVO>> getMDataEntityByDeviceId(String deviceId){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            // 找到该设备
+            MDeviceEntity mDeviceEntity;
+            Optional<MDeviceEntity> opt = mDeviceEntityRepository.findById(deviceId); //"N1310975139973697536"
+            if( opt.isPresent() ){
+                mDeviceEntity = opt.get();
+                if( mDeviceEntity.getIsDeleted() ){
+                    throw new ServiceException("数据已删除");
+                }
+            }else{
+                throw new ServiceException("未找到该数据");
+            }
+
+            // 获取DisplayIds列表
+            Set<String> displaySet = new HashSet<String>();
+            if( mDeviceEntity.getDisplayIds() != null ){
+                for( String str : mDeviceEntity.getDisplayIds() ){
+                    displaySet.add(str);
+                }
+            }
+
+            // 获取DataIds列表
+            Set<String> dataSet = new HashSet<String>();
+            for( String str : displaySet ){
+                Optional<MDisplayEntity> tmp = mDisplayEntityRepository.findById(str); //"N1310975139973697536"
+                if( tmp.isPresent() ){
+                    if( tmp.get().getIsDeleted() ){
+                        throw new ServiceException("数据已删除");
+                    }
+                    dataSet.add( tmp.get().getDataId() );
+                }else{
+                    throw new ServiceException("未找到该数据");
+                }
+            }
+
+            // 返回数据具体信息
+            Set<MDataEntityOutputVO> result = new HashSet<MDataEntityOutputVO>();
+            for( String str : dataSet ){
+                Optional<MDataEntity> optTmp = mDataEntityRepository.findById(str);
+                if( optTmp.isPresent() ){
+                    if( optTmp.get().getIsDeleted() ){
+                        throw new ServiceException("数据已删除");
+                    }
+                    result.add( new MDataEntityOutputVO( optTmp.get() ) ); // 添加数据元素
+                }
+
+            }
+
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(result);
             return responseVO;
         }catch( ServiceException e){
             log.error("MDevice读取异常", e);

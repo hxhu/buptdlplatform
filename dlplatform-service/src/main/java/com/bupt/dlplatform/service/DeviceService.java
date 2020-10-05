@@ -29,6 +29,11 @@ public interface DeviceService {
     public ResponseVO<ArrayList<MDeviceEntityOutputVO>> getMDeviceEntityByUserId(String userId);
 
     /**
+     * 根据设备ID找到数据列表
+     */
+    public ResponseVO<ArrayList<MDataEntityOutputVO>> getMDataEntityByDeviceId(String deviceId);
+
+    /**
      * 删除设备
      */
     public ResponseVO deleteMDeviceEntity(String id);
