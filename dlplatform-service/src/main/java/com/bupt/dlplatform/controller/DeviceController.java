@@ -59,6 +59,14 @@ public class DeviceController {
     }
 
     /**
+     * 根据设备ID及类型，找到配置信息
+     */
+    @GetMapping("/getDisplayByDeviceIdAndDisplayType")
+    public ResponseVO<MDisplayEntityOutputVO> getMDisplayEntityByDeviceId(@RequestParam(value = "deviceId")String deviceId, @RequestParam(value = "type")String type){
+        return deviceService.getMDisplayEntityByDeviceId(deviceId, type);
+    }
+
+    /**
      * 删除数据
      */
     @DeleteMapping("/delete")

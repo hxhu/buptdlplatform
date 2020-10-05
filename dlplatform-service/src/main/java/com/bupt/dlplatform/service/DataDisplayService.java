@@ -2,6 +2,8 @@ package com.bupt.dlplatform.service;
 
 import com.bupt.dlplatform.vo.*;
 
+import java.util.ArrayList;
+
 /**
  * Created by huhx on 2020/10/3
  */
@@ -20,6 +22,11 @@ public interface DataDisplayService {
      * 读取一个配置（Id方式）
      */
     public ResponseVO<MDisplayEntityOutputVO> getMDisplayEntityById(String id);
+
+    /**
+     * 跟据配置ID获得数据信息
+     */
+//    public ResponseVO<MDataEntityOutputVO> getMDataEntityByConfigId(String configId);
 
     /**
      * 删除配置

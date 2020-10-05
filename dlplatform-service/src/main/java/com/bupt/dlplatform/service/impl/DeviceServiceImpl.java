@@ -284,6 +284,50 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     /**
+     * 根据设备ID及类型，找到配置信息
+     */
+    public ResponseVO<MDisplayEntityOutputVO> getMDisplayEntityByDeviceId(String deviceId, String type){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            MDeviceEntity mDeviceEntity;
+            Optional<MDeviceEntity> opt = mDeviceEntityRepository.findById(deviceId); //"N1310975139973697536"
+            if( opt.isPresent() ){
+                mDeviceEntity = opt.get();
+                if( mDeviceEntity.getIsDeleted() ){
+                    throw new ServiceException("数据已删除");
+                }
+            }else{
+                throw new ServiceException("未找到该数据");
+            }
+
+            // 找到相应Type的配置信息
+            ArrayList<String> displayIds = mDeviceEntity.getDisplayIds();
+            MDisplayEntityOutputVO result = null;
+            for( String str : displayIds ){
+                MDisplayEntity mDisplayEntity = mDisplayEntityRepository.findByIdAndType(str, type);
+                if( mDisplayEntity != null ){
+                    result = new MDisplayEntityOutputVO(mDisplayEntity);
+                }
+            }
+            if( result == null ){
+                throw new ServiceException("查找数据配置失败");
+            }
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(result);
+            return responseVO;
+        }catch( ServiceException e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }
+    }
+
+    /**
      * 删除设备
      */
     @Override

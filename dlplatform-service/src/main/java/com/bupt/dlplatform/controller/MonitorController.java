@@ -16,7 +16,7 @@ public class MonitorController {
     private MonitorService monitorService;
 
     /*
-     * 新建数据
+     * 新建监控
      */
     @PostMapping("/create")
     public ResponseVO createMMonitorEntity(@RequestBody MMonitorEntityInputVO request){
@@ -24,7 +24,7 @@ public class MonitorController {
     }
 
     /**
-     * 更新数据
+     * 更新监控
      */
     @PostMapping("/update")
     public ResponseVO updateMMonitorEntity(@RequestBody MMonitorEntityInputVO request){
@@ -32,7 +32,7 @@ public class MonitorController {
     }
 
     /*
-     * 读取一条数据（Id方式）
+     * 读取一条监控（Id方式）
      */
     @GetMapping("/getById")
     public ResponseVO<MMonitorEntityOutputVO> getMonitor(@RequestParam(value = "id") String id){
@@ -40,7 +40,7 @@ public class MonitorController {
     }
 
     /**
-     * 删除数据
+     * 删除监控
      */
     @DeleteMapping("/delete")
     public ResponseVO deleteMMonitorEntity(@RequestParam(value = "id") String id){

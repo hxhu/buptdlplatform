@@ -1,51 +1,50 @@
 package com.bupt.dlplatform.controller;
 
+import com.bupt.dlplatform.model.MDisplayEntity;
+import com.bupt.dlplatform.service.DataDisplayService;
 import com.bupt.dlplatform.service.DataSourceService;
-import com.bupt.dlplatform.vo.MDataEntityInputVO;
-import com.bupt.dlplatform.vo.MDataEntityOutputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
+import com.bupt.dlplatform.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by huhx on 2020/9/29
+ * Created by huhx on 2020/10/3
  */
 @RestController
 @RequestMapping("/dlplatform/dataDisplay")
 public class DataDisplayController {
     @Autowired
-    private DataSourceService dataSourceService;
+    private DataDisplayService dataDisplayService;
 
     /*
-    * 新建数据
-    */
+     * 新建配置
+     */
     @PostMapping("/create")
-    public ResponseVO createMDataEntity(@RequestBody MDataEntityInputVO request){
-        return dataSourceService.createMDataEntity(request);
+    public ResponseVO createMDisplayEntity(@RequestBody MDisplayEntityInputVO request){
+        return dataDisplayService.createMDisplayEntity(request);
     }
 
     /**
-     * 更新数据
+     * 更新配置
      */
     @PostMapping("/update")
-    public ResponseVO updateMDataEntity(@RequestBody MDataEntityInputVO request){
-        return dataSourceService.updateMDataEntity(request);
+    public ResponseVO updateMDisplayEntity(@RequestBody MDisplayEntityInputVO request){
+        return dataDisplayService.updateMDisplayEntity(request);
     }
 
     /*
-    * 读取一条数据（Id方式）
-    */
+     * 读取一条配置（Id方式）
+     */
     @GetMapping("/getById")
-    public ResponseVO<MDataEntityOutputVO> getData(@RequestParam(value = "id") String id){
-        return dataSourceService.getMDataEntityById(id);
+    public ResponseVO<MDisplayEntityOutputVO> getConfig(@RequestParam(value = "id") String id){
+        return dataDisplayService.getMDisplayEntityById(id);
     }
 
     /**
-     * 删除数据
+     * 删除配置
      */
     @DeleteMapping("/delete")
-    public ResponseVO daleteMDataEntity(@RequestParam(value = "id") String id){
-        return dataSourceService.deleteMDataEntity(id);
+    public ResponseVO daleteMDisplayEntity(@RequestParam(value = "id") String id){
+        return dataDisplayService.deleteMDisplayEntity(id);
     }
-
 }
