@@ -10,4 +10,5 @@ import java.util.ArrayList;
  */
 public interface MDeviceEntityRepository extends MongoRepository<MDeviceEntity, String> {
     public ArrayList<MDeviceEntity> findByUserId(String userId);
+
 }

@@ -1,0 +1,66 @@
+gst-launch-1.0 v4l2src ! xvimagesink
+gst-launch-1.0 v4l2src device=/dev/video0 ! 'video/x-raw, width=(int)640, height=(int)480' ! xvimagesink
+
+<test video>
+gst-launch-1.0 videotestsrc ! 'video/x-raw, width=(int)1200, height=(int)720, format=(string)I420, framerate=(fraction)30/1' ! nveglglessink -e
+
+<already video file testsrc>
+--send--
+gst-launch-1.0 videotestsrc pattern=ball ! 'video/x-raw, width=(int)640, height=(int)480' ! videoconvert ! x264enc tune=zerolatency ! rtph264pay ! udpsink host=192.168.1.5 port=5600 sync=false async=false
+--recieve--
+gst-launch-1.0 -v udpsrc port=5600 caps='application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264' ! rtph264depay ! avdec_h264 ! xvimagesink sync=false async=false
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+<already mp4 show screen>
+gst-launch-1.0 filesrc location=video.mp4 ! qtdemux name=demux ! h264parse ! omxh264dec ! nveglglessink -e
+
+<usb camera show screen>
+gst-launch-1.0 v4l2src ! decodebin ! videoconvert ! omxh264enc ! h264parse ! omxh264dec ! nveglglessink -e
+
+<local usb camera sender/reciever show screen>
+-- sender --
+gst-launch-1.0 v4l2src ! decodebin ! videoconvert ! omxh264enc ! video/x-h264, stream-format=byte-stream ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+-- sender framerate control --
+gst-launch-1.0 v4l2src ! video/x-raw, framerate=30/1 ! decodebin ! videoconvert ! omxh264enc ! 'video/x-h264, stream-format=byte-stream' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+-- reciever --
+gst-launch-1.0 -v udpsrc port=5000 caps='application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264' ! rtph264depay ! avdec_h264 ! xvimagesink sync=false async=false
+-- reciever (or) --
+gst-launch-1.0 udpsrc port=5000 caps='application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264' ! rtph264depay ! h264parse ! omxh264dec ! nveglglessink
+
+
+<local already mp4>
+-- sender --
+gst-launch-1.0 filesrc location="/home/nvidia/video.mp4" ! video/x-raw, framerate=15/1 ! decodebin ! videoconvert ! omxh264enc ! 'video/x-h264, stream-format=byte-stream' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+gst-launch-1.0 filesrc location="/home/nvidia/video.mp4" ! videoparse framerate=30 ! x264enc ! 'video/x-h264' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+gst-launch-1.0 filesrc location="/home/nvidia/video.mp4" ! videoparse framerate=30 ! decodebin ! videoconvert ! x264enc ! 'video/x-h264' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+-- reciever --
+gst-launch-1.0 -v udpsrc port=5000 caps='application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264' ! rtph264depay ! avdec_h264 ! xvimagesink sync=false async=false
+
+
+<local already test video src>
+-- sender --
+gst-launch-1.0 videotestsrc pattern=ball ! videoconvert ! omxh264enc ! 'video/x-h264, stream-format=byte-stream' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+gst-launch-1.0 videotestsrc pattern=ball ! videoparse framerate=30 ! x264enc ! 'video/x-h264' ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+-- reciever --
+gst-launch-1.0 -v udpsrc port=5000 caps='application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264' ! rtph264depay ! avdec_h264 ! xvimagesink sync=false async=false
+
+
+
+<Intenet rtsp>
+gst-launch-1.0 rtspsrc location=rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov latency=0 ! rtph264depay ! h264parse ! avdec_h264 ! xvimagesink
+
+<rtsp change uri>
+./test-launch "( rtspsrc location=rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov latency=0 ! queue ! rtph264depay ! queue ! rtph264pay name=pay0 pt=96 )"
+gst-launch-1.0 rtspsrc location=rtsp://127.0.0.1:8554/test latency=0 ! rtph264depay ! h264parse ! avdec_h264 ! xvimagesink
+
+
+./test-launch "( videotestsrc pattern=ball ! x264enc ! rtph264pay name=pay0 pt=96 )"  (must have KongGe)
+gst-launch-1.0 rtspsrc location=rtsp://127.0.0.1:8554/test latency=0 ! rtph264depay ! h264parse ! avdec_h264 ! xvimagesink
+
+
+<Final>  -----   wait 10 seconds
+./test-launch "( videotestsrc pattern=ball ! x264enc ! rtph264pay name=pay0 pt=96 )"
+gst-launch-1.0 rtspsrc location=rtsp://127.0.0.1:5544/test latency=0 ! rtph264depay ! h264parse ! gdppay ! tcpserversink host=127.0.0.1 port=6000
+./test-launch "( tcpclientsrc host=127.0.0.1 port=6000 ! gdpdepay ! rtph264pay name=pay0 pt=96 )"
+gst-launch-1.0 rtspsrc location=rtsp://127.0.0.1:8554/test latency=0 ! rtph264depay ! h264parse ! avdec_h264 ! xvimagesink
+

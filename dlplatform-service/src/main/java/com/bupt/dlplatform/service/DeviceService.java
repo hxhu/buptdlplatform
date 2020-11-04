@@ -1,8 +1,11 @@
 package com.bupt.dlplatform.service;
 
 import com.bupt.dlplatform.vo.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhx on 2020/10/3
@@ -37,6 +40,11 @@ public interface DeviceService {
      * 根据设备ID及类型，找到配置信息
      */
     public ResponseVO<MDisplayEntityOutputVO> getMDisplayEntityByDeviceId(String deviceId, String type);
+
+    /*
+     * 获得某设备的全部配置（Id方式）
+     */
+    public ResponseVO<List<MDisplayEntityOutputVO>> getConfigsById(String deviceId);
 
     /**
      * 删除设备

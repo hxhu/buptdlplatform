@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhx on 2020/10/3
@@ -40,6 +41,14 @@ public class DeviceController {
     @GetMapping("/getById")
     public ResponseVO<MDeviceEntityOutputVO> getConfig(@RequestParam(value = "id") String id){
         return deviceService.getMDeviceEntityById(id);
+    }
+
+    /*
+     * 获得某设备的全部配置（Id方式）
+     */
+    @GetMapping("/getDisplaysById")
+    public ResponseVO<List<MDisplayEntityOutputVO>> getConfigsById(@RequestParam(value = "id") String deviceId){
+        return deviceService.getConfigsById(deviceId);
     }
 
     /*
