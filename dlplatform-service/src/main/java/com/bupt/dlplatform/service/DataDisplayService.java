@@ -1,6 +1,8 @@
 package com.bupt.dlplatform.service;
 
 import com.bupt.dlplatform.vo.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 
@@ -12,6 +14,11 @@ public interface DataDisplayService {
      * 新建配置
      */
     public ResponseVO createMDisplayEntity(MDisplayEntityInputVO request);
+
+    /*
+     * 新建数据及配置
+     */
+    public ResponseVO createDataAndDisplay(MDisplayEntityInputVO request);
 
     /**
      * 更新配置

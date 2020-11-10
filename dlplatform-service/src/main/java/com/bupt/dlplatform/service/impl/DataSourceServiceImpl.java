@@ -42,7 +42,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         try {
             MDataEntity mDataEntity = new MDataEntity();
             mDataEntity.setId(idGenerator.nextId());
-            mDataEntity.setName( request.getName() == null ? request.getName() : "" );
+            mDataEntity.setName( request.getName() != null ? request.getName() : "" );
             mDataEntity.setCreateTimestamp(nowTimestamp);
             mDataEntity.setLastTimestamp(nowTimestamp);
             if( request.getType() != null ){

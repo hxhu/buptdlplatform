@@ -24,6 +24,14 @@ public class DataDisplayController {
         return dataDisplayService.createMDisplayEntity(request);
     }
 
+    /*
+     * 新建数据及配置
+     */
+    @PostMapping("/createDataAndDisplay")
+    public ResponseVO createDataAndDisplay(@RequestBody MDisplayEntityInputVO request){
+        return dataDisplayService.createDataAndDisplay(request);
+    }
+
     /**
      * 更新配置
      */

@@ -2,6 +2,7 @@ package com.bupt.dlplatform.service.impl;
 
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
+import com.bupt.dlplatform.mapper.MDataEntityRepository;
 import com.bupt.dlplatform.mapper.MDisplayEntityRepository;
 import com.bupt.dlplatform.model.MDataEntity;
 import com.bupt.dlplatform.model.MDisplayEntity;
@@ -28,6 +29,9 @@ public class DataDisplayServiceImpl implements DataDisplayService {
     @Autowired
     private MDisplayEntityRepository mDisplayEntityRepository;
 
+    @Autowired
+    private MDataEntityRepository mDataEntityRepository;
+
 
     /**
      * 新建配置
@@ -50,6 +54,65 @@ public class DataDisplayServiceImpl implements DataDisplayService {
             mDisplayEntity.setConfigs( request.getConfigs() );
             if( request.getDataId() != null ){
                 mDisplayEntity.setDataId( request.getDataId() );
+            }else{
+                throw new ServiceException("必须提供DataId");
+            }
+            mDisplayEntity.setCreateTimestamp(nowTimestamp);
+            mDisplayEntity.setIsDeleted(false);
+            mDisplayEntityRepository.save(mDisplayEntity);
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData("OK");
+            return responseVO;
+
+        }catch ( ServiceException e ){
+            log.error("MConfig更新异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MConfig更新异常", e);
+            return responseVO;
+        }
+    }
+
+    /*
+     * 新建数据及配置
+     */
+    public ResponseVO createDataAndDisplay(MDisplayEntityInputVO request){
+        long  nowTimestamp =  System.currentTimeMillis();
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            String dataId = idGenerator.nextId();
+            // 创建Data
+            MDataEntity mDataEntity = new MDataEntity();
+            mDataEntity.setId(dataId);
+            mDataEntity.setName( request.getName() != null ? request.getName()+"数据" : "" );
+            mDataEntity.setCreateTimestamp(nowTimestamp);
+            mDataEntity.setLastTimestamp(nowTimestamp);
+            if( request.getType() != null ){
+                mDataEntity.setType( request.getType() );
+            }else{
+                throw new ServiceException("必须提供type");
+            }
+            mDataEntity.setValue(TypeUtil.returnVoidValue(request.getType()));
+            mDataEntity.setIsDeleted(false);
+
+            mDataEntityRepository.save(mDataEntity);
+
+            // 创建Display
+            MDisplayEntity mDisplayEntity = new MDisplayEntity();
+            mDisplayEntity.setId(idGenerator.nextId());
+            mDisplayEntity.setName( request.getName() != null ? request.getName() : "" );
+            mDisplayEntity.setDesc( request.getDesc() != null ? request.getDesc() : "" );
+            if( request.getType() != null ){
+                mDisplayEntity.setType( request.getType() );
+            }else{
+                throw new ServiceException("必须提供type");
+            }
+            mDisplayEntity.setConfigs( request.getConfigs() );
+            if( dataId != null || dataId.equals("") ){
+                mDisplayEntity.setDataId( dataId );
             }else{
                 throw new ServiceException("必须提供DataId");
             }
