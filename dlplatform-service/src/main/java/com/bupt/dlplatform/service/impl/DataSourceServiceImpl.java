@@ -137,6 +137,43 @@ public class DataSourceServiceImpl implements DataSourceService {
         }
     }
 
+    /*
+     * 读取一组数据（Id方式）
+     */
+    public ResponseVO<List<MDataEntityOutputVO>> getDatasByIds(String[] ids){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            MDataEntity mDataEntity;
+            List<MDataEntityOutputVO> result = new ArrayList<MDataEntityOutputVO>();
+
+            for( int i = 0; i < ids.length; i++ ){
+                Optional<MDataEntity> opt = mDataEntityRepository.findById(ids[i]); //"N1310975139973697536"
+                if( opt.isPresent() ){
+                    mDataEntity = opt.get();
+                    if( mDataEntity.getIsDeleted() ){
+                        throw new ServiceException("数据已删除");
+                    }
+                }else{
+                    throw new ServiceException("未找到该数据");
+                }
+
+                result.add(new MDataEntityOutputVO(mDataEntity));
+            }
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(result);
+            return responseVO;
+        }catch( ServiceException e){
+            log.error("MData读取异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MData读取异常", e);
+            return responseVO;
+        }
+    }
+
     /**
      * 删除数据
      */

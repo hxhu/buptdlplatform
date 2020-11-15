@@ -52,6 +52,14 @@ public class DeviceController {
     }
 
     /*
+     * 获得某设备的图表显示（Id方式）
+     */
+    @GetMapping("/getFiguresById")
+    public ResponseVO<List<MDisplayEntityOutputVO>> getFiguresById(@RequestParam(value = "id") String deviceId){
+        return deviceService.getFiguresById(deviceId);
+    }
+
+    /*
      * 根据用户名找到设备列表
      */
     @GetMapping("/getListByUserId")

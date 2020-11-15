@@ -378,6 +378,62 @@ public class DeviceServiceImpl implements DeviceService {
         }
     }
 
+    /*
+     * 获得某设备的图表显示（Id方式）
+     */
+    public ResponseVO<List<MDisplayEntityOutputVO>> getFiguresById(String deviceId){
+        ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            // 找到该设备
+            MDeviceEntity mDeviceEntity;
+            Optional<MDeviceEntity> opt = mDeviceEntityRepository.findById(deviceId); //"N1310975139973697536"
+            if( opt.isPresent() ){
+                mDeviceEntity = opt.get();
+                if( mDeviceEntity.getIsDeleted() ){
+                    throw new ServiceException("数据已删除");
+                }
+            }else{
+                throw new ServiceException("未找到该数据");
+            }
+
+            // 获取DisplayIds列表
+            Set<String> displaySet = new HashSet<String>();
+            if( mDeviceEntity.getDisplayIds() != null ){
+                for( String str : mDeviceEntity.getDisplayIds() ){
+                    displaySet.add(str);
+                }
+            }
+
+            // 获取Displays详细列表
+            List<MDisplayEntityOutputVO> dataList = new ArrayList<MDisplayEntityOutputVO>();
+            for( String str : displaySet ){
+                Optional<MDisplayEntity> tmp = mDisplayEntityRepository.findById(str); //"N1310975139973697536"
+                if( tmp.isPresent() ){
+                    if( tmp.get().getIsDeleted() ){
+                        throw new ServiceException("数据已删除");
+                    }
+                    if( tmp.get().getType().equals("figure") ){
+                        dataList.add( new MDisplayEntityOutputVO( tmp.get() ) );
+                    }
+                }else{
+                    throw new ServiceException("未找到该数据");
+                }
+            }
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(dataList);
+            return responseVO;
+        }catch( ServiceException e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }catch (Exception e){
+            log.error("MDevice读取异常", e);
+            return responseVO;
+        }
+    }
+
     /**
      * 删除设备
      */

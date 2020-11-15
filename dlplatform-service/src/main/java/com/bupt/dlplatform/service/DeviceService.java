@@ -46,6 +46,11 @@ public interface DeviceService {
      */
     public ResponseVO<List<MDisplayEntityOutputVO>> getConfigsById(String deviceId);
 
+    /*
+     * 获得某设备的图表显示（Id方式）
+     */
+    public ResponseVO<List<MDisplayEntityOutputVO>> getFiguresById(String deviceId);
+
     /**
      * 删除设备
      */

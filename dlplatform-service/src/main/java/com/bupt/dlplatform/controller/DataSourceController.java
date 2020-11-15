@@ -1,11 +1,14 @@
 package com.bupt.dlplatform.controller;
 
 import com.bupt.dlplatform.service.DataSourceService;
+import com.bupt.dlplatform.vo.IdsVO;
 import com.bupt.dlplatform.vo.MDataEntityInputVO;
 import com.bupt.dlplatform.vo.MDataEntityOutputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by huhx on 2020/9/29
@@ -38,6 +41,14 @@ public class DataSourceController {
     @GetMapping("/getById")
     public ResponseVO<MDataEntityOutputVO> getData(@RequestParam(value = "id") String id){
         return dataSourceService.getMDataEntityById(id);
+    }
+
+    /*
+     * 读取一组数据（Id方式）
+     */
+    @PostMapping("/getDatasByIds")
+    public ResponseVO<List<MDataEntityOutputVO>> getDatasByIds(@RequestBody IdsVO request){
+        return dataSourceService.getDatasByIds(request.getIds());
     }
 
     /**
