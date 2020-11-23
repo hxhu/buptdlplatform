@@ -6,12 +6,10 @@ import com.bupt.dlplatform.mapper.MDisplayEntityRepository;
 import com.bupt.dlplatform.mapper.MMonitorEntityRepository;
 import com.bupt.dlplatform.model.MDisplayEntity;
 import com.bupt.dlplatform.model.MMonitorEntity;
+import com.bupt.dlplatform.service.LogService;
 import com.bupt.dlplatform.service.MonitorService;
 import com.bupt.dlplatform.util.IdGenerator;
-import com.bupt.dlplatform.vo.MDisplayEntityOutputVO;
-import com.bupt.dlplatform.vo.MMonitorEntityInputVO;
-import com.bupt.dlplatform.vo.MMonitorEntityOutputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
+import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,9 @@ public class MonitorServiceImpl implements MonitorService {
 
     @Autowired
     private MMonitorEntityRepository mMonitorEntityRepository;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 新建监控
@@ -52,6 +53,8 @@ public class MonitorServiceImpl implements MonitorService {
             mMonitorEntity.setIsDeleted(false);
             mMonitorEntityRepository.save(mMonitorEntity);
 
+            logService.updateMLogEntity(new MLogEntityInputVO(3, "new", nowTimestamp, "新建监控") );
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData("OK");
@@ -71,6 +74,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public ResponseVO updateMMonitorEntity(MMonitorEntityInputVO request){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -92,6 +96,8 @@ public class MonitorServiceImpl implements MonitorService {
                 mMonitorEntity.setMapId( request.getMapId() );
             }
             mMonitorEntityRepository.save(mMonitorEntity);
+
+            logService.updateMLogEntity(new MLogEntityInputVO(4, "modify", nowTimestamp, "修改监控") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -141,6 +147,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public ResponseVO deleteMMonitorEntity(String id){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -153,6 +160,8 @@ public class MonitorServiceImpl implements MonitorService {
             }else{
                 throw new ServiceException("未找到该数据");
             }
+
+            logService.updateMLogEntity(new MLogEntityInputVO(3, "delete", nowTimestamp, "删除监控") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());

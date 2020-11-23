@@ -7,6 +7,7 @@ import com.bupt.dlplatform.mapper.MDisplayEntityRepository;
 import com.bupt.dlplatform.model.MDataEntity;
 import com.bupt.dlplatform.model.MDisplayEntity;
 import com.bupt.dlplatform.service.DataDisplayService;
+import com.bupt.dlplatform.service.LogService;
 import com.bupt.dlplatform.util.IdGenerator;
 import com.bupt.dlplatform.util.TypeUtil;
 import com.bupt.dlplatform.vo.*;
@@ -32,6 +33,8 @@ public class DataDisplayServiceImpl implements DataDisplayService {
     @Autowired
     private MDataEntityRepository mDataEntityRepository;
 
+    @Autowired
+    private LogService logService;
 
     /**
      * 新建配置
@@ -60,6 +63,8 @@ public class DataDisplayServiceImpl implements DataDisplayService {
             mDisplayEntity.setCreateTimestamp(nowTimestamp);
             mDisplayEntity.setIsDeleted(false);
             mDisplayEntityRepository.save(mDisplayEntity);
+
+            logService.updateMLogEntity(new MLogEntityInputVO(3, "new", nowTimestamp, "新建配置") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -120,6 +125,8 @@ public class DataDisplayServiceImpl implements DataDisplayService {
             mDisplayEntity.setIsDeleted(false);
             mDisplayEntityRepository.save(mDisplayEntity);
 
+            logService.updateMLogEntity(new MLogEntityInputVO(3, "new", nowTimestamp, "新建配置") );
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData("OK");
@@ -139,6 +146,7 @@ public class DataDisplayServiceImpl implements DataDisplayService {
      */
     @Override
     public ResponseVO updateMDisplayEntity(MDisplayEntityInputVO request){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -163,6 +171,8 @@ public class DataDisplayServiceImpl implements DataDisplayService {
                 mDisplayEntity.setDataId( request.getDataId() );
             }
             mDisplayEntityRepository.save(mDisplayEntity);
+
+            logService.updateMLogEntity(new MLogEntityInputVO(4, "modify", nowTimestamp, "修改配置") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -212,6 +222,7 @@ public class DataDisplayServiceImpl implements DataDisplayService {
      */
     @Override
     public ResponseVO deleteMDisplayEntity(String id){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -224,6 +235,8 @@ public class DataDisplayServiceImpl implements DataDisplayService {
             }else{
                 throw new ServiceException("未找到该数据");
             }
+
+            logService.updateMLogEntity(new MLogEntityInputVO(3, "delete", nowTimestamp, "删除配置") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());

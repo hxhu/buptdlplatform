@@ -9,6 +9,7 @@ import com.bupt.dlplatform.model.MDataEntity;
 import com.bupt.dlplatform.model.MDeviceEntity;
 import com.bupt.dlplatform.model.MDisplayEntity;
 import com.bupt.dlplatform.service.DeviceService;
+import com.bupt.dlplatform.service.LogService;
 import com.bupt.dlplatform.util.IdGenerator;
 import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private MDataEntityRepository mDataEntityRepository;
+
+    @Autowired
+    private LogService logService;
 
     /**
      * 新建设备
@@ -82,6 +86,8 @@ public class DeviceServiceImpl implements DeviceService {
             mDeviceEntity.setIsDeleted(false);
             mDeviceEntityRepository.save(mDeviceEntity);
 
+            logService.updateMLogEntity(new MLogEntityInputVO(1, "new", nowTimestamp, "新建节点") );
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData("OK");
@@ -101,6 +107,7 @@ public class DeviceServiceImpl implements DeviceService {
      */
     @Override
     public ResponseVO updateMDeviceEntity(MDeviceEntityInputVO request){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO =new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -138,6 +145,7 @@ public class DeviceServiceImpl implements DeviceService {
             }
             mDeviceEntityRepository.save(mDeviceEntity);
 
+            logService.updateMLogEntity(new MLogEntityInputVO(2, "modify", nowTimestamp, "修改节点") );
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
             responseVO.setData("OK");
@@ -439,6 +447,7 @@ public class DeviceServiceImpl implements DeviceService {
      */
     @Override
     public ResponseVO deleteMDeviceEntity(String id){
+        long  nowTimestamp =  System.currentTimeMillis();
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -451,6 +460,8 @@ public class DeviceServiceImpl implements DeviceService {
             }else{
                 throw new ServiceException("未找到该数据");
             }
+
+            logService.updateMLogEntity(new MLogEntityInputVO(1, "delete", nowTimestamp, "删除节点") );
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
