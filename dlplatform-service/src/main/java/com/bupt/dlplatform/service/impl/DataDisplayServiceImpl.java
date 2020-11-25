@@ -127,9 +127,11 @@ public class DataDisplayServiceImpl implements DataDisplayService {
 
             logService.updateMLogEntity(new MLogEntityInputVO(3, "new", nowTimestamp, "新建配置") );
 
+            MDataAndDisplayOutputVO mDataAndDisplayOutputVO = new MDataAndDisplayOutputVO(mDataEntity, mDisplayEntity);
+
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
-            responseVO.setData("OK");
+            responseVO.setData(mDataAndDisplayOutputVO);
             return responseVO;
 
         }catch ( ServiceException e ){
