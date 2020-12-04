@@ -11,19 +11,19 @@ spring:
       connectionTestQuery: SELECT 1
       maximum-pool-size: 50
       minimum-idle: 10
-  data:
-    mongodb:
-      uri: mongodb://127.0.0.1:27017/dlplatform
-  kafka:
-    consumer:
-      bootstrap-servers: 127.0.0.1:9092
-      # 键的反序列化方式
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # 值的反序列化方式
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      enable-auto-commit: false
-    listener:
-      ack-mode: manual_immediate
+#  data:
+#    mongodb:
+#      uri: mongodb://127.0.0.1:27017/dlplatform
+#  kafka:
+        ##    consumer:
+        ##      bootstrap-servers: 127.0.0.1:9092
+        ##      # 键的反序列化方式
+        ##      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        ##      # 值的反序列化方式
+        ##      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        ##      enable-auto-commit: false
+      ##    listener:
+      ##      ack-mode: manual_immediate
 #      # 自动提交的时间间隔 在spring boot 2.X 版本中这里采用的是值的类型为Duration 需要符合特定的格式，如1S,1M,2H,5D
 #      auto-commit-interval: 1S
 #      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
