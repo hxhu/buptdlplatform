@@ -4,16 +4,15 @@ spring:
     url: jdbc:mysql://playwolf.mysql.rds.aliyuncs.com:3306/dlplatform?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false
     username: dlplatform_app
     password: 1234asdf!
-
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
       pool-name: pool-vscloud
       connectionTestQuery: SELECT 1
       maximum-pool-size: 50
       minimum-idle: 10
-#  data:
-#    mongodb:
-#      uri: mongodb://127.0.0.1:27017/dlplatform
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/dlplatform
 #  kafka:
         ##    consumer:
         ##      bootstrap-servers: 127.0.0.1:9092
@@ -24,6 +23,7 @@ spring:
         ##      enable-auto-commit: false
       ##    listener:
       ##      ack-mode: manual_immediate
+
 #      # 自动提交的时间间隔 在spring boot 2.X 版本中这里采用的是值的类型为Duration 需要符合特定的格式，如1S,1M,2H,5D
 #      auto-commit-interval: 1S
 #      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理：
