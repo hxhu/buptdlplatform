@@ -90,19 +90,19 @@ public class EDeviceServiceImpl implements EDeviceService {
             }else{
                 throw new ServiceException("必须提供deviceId");
             }
-            if( eDeviceInputVO.getDeviceName() != null ){
+            if( eDeviceInputVO.getDeviceName() != null && !eDeviceInputVO.getDeviceName().equals("") ){
                 eDeviceEntity.setDeviceName( eDeviceInputVO.getDeviceName() );
             }
-            if( eDeviceInputVO.getDeviceDesc() != null ){
+            if( eDeviceInputVO.getDeviceDesc() != null && !eDeviceInputVO.getDeviceDesc().equals("") ){
                 eDeviceEntity.setDeviceDesc( eDeviceInputVO.getDeviceDesc() );
             }
-            if( eDeviceInputVO.getVideoRtsp() != null ){
+            if( eDeviceInputVO.getVideoRtsp() != null && !eDeviceInputVO.getVideoRtsp().equals("") ){
                 eDeviceEntity.setVideoRtsp( eDeviceInputVO.getVideoRtsp() );
             }
-            if( eDeviceInputVO.getVideoMessage() != null ){
+            if( eDeviceInputVO.getVideoMessage() != null && !eDeviceInputVO.getVideoMessage().equals("") ){
                 eDeviceEntity.setVideoMessage( eDeviceInputVO.getVideoMessage() );
             }
-            if( eDeviceInputVO.getCurrentModelId() != null ){
+            if( eDeviceInputVO.getCurrentModelId() != null && !eDeviceInputVO.getCurrentModelId().equals("") ){
                 eDeviceEntity.setCurrentModelId( eDeviceInputVO.getCurrentModelId() );
             }
 

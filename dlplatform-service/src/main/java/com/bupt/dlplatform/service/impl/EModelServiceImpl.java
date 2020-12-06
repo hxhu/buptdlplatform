@@ -1,9 +1,11 @@
 package com.bupt.dlplatform.service.impl;
 
+import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EModelRepository;
 import com.bupt.dlplatform.model.EModelEntity;
+import com.bupt.dlplatform.rpc.MQTTService;
 import com.bupt.dlplatform.service.EModelService;
 import com.bupt.dlplatform.util.IdGenerator;
 import com.bupt.dlplatform.vo.EModelInputVO;
@@ -30,6 +32,9 @@ public class EModelServiceImpl implements EModelService {
 
     @Autowired
     private EModelRepository eModelRepository;
+
+    private volatile ConsumerConfig<MQTTService> consumerConfig = null;
+    private MQTTService mqttService = null;
 
     /**
      * 增加模型
@@ -215,10 +220,28 @@ public class EModelServiceImpl implements EModelService {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
-            for( String i : pushModelInputVO.getDeviceIds() ){
-                System.out.print( i + " ");
+            // 双重检验锁
+            if( mqttService == null ){
+                synchronized (MQTTService.class){
+                    if( mqttService == null ){
+                        // PRC调用服务
+                        consumerConfig = new ConsumerConfig<MQTTService>()
+                                .setInterfaceId(MQTTService.class.getName()) // 指定接口
+                                .setProtocol("bolt") // 指定协议
+                                .setDirectUrl("bolt://127.0.0.1:12400"); // 指定直连地址
+                        // 生成代理类
+                        mqttService = consumerConfig.refer();
+                    }
+                }
             }
-            System.out.print( pushModelInputVO.getModelId() );
+
+            if( mqttService.pushModel(
+                    pushModelInputVO.getDeviceIds(),
+                    pushModelInputVO.getModelId(),
+                    "yolov3.weights",
+                    "points").equals("ERROR") ){
+                new ServiceException("发送数据失败");
+            }
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());

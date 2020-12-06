@@ -2,6 +2,22 @@ package com.bupt.dlplatform;
 
 /**
  * Created by huhx on 2020/12/3
+ * <p>
+ * <p>
+ * Description:
+ *
+ * @author admin
+ * 2017年2月10日下午18:04:07
+ * <p>
+ * <p>
+ * Description:
+ * @author admin
+ * 2017年2月10日下午18:04:07
+ * <p>
+ * <p>
+ * Description:
+ * @author admin
+ * 2017年2月10日下午18:04:07
  */
 /**
  *
@@ -10,9 +26,17 @@ package com.bupt.dlplatform;
  * 2017年2月10日下午18:04:07
  */
 
+import com.alipay.sofa.rpc.config.ConsumerConfig;
+import com.bupt.dlplatform.Entity.UpEntity;
+import com.bupt.dlplatform.rpc.DLPlatformService;
+import com.bupt.dlplatform.rpc.MQTTService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * 发布消息的回调类
@@ -32,6 +56,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  *
  */
 public class PushCallback implements MqttCallback {
+    private volatile ConsumerConfig<DLPlatformService> consumerConfig = null;
+    private DLPlatformService dlPlatformService = null;
 
     public void connectionLost(Throwable cause) {
         // 连接丢失后，一般在这里面进行重连
@@ -39,14 +65,51 @@ public class PushCallback implements MqttCallback {
     }
 
     public void deliveryComplete(IMqttDeliveryToken token) {
-        System.out.println("发送成功---------" + token.isComplete());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        if (token.isComplete()) {
+            System.out.println(df.format(new Date()) + " 发送成功");
+        } else {
+            System.out.println(df.format(new Date()) + " 发送失败");
+        }
     }
 
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         // subscribe后得到的消息会执行到这里面
-        System.out.println("接收消息主题 : " + topic);
-        System.out.println("接收消息Qos : " + message.getQos());
-        System.out.println("接收消息内容 : " + new String(message.getPayload()));
+//        System.out.println("接收消息主题 : " + topic);
+//        System.out.println("接收消息Qos : " + message.getQos());
+//        System.out.println("接收消息内容 : " + new String(message.getPayload()));
+        try {
+            // 双重检验锁
+            if (dlPlatformService == null) {
+                synchronized (MQTTService.class) {
+                    if (dlPlatformService == null) {
+                        // PRC调用服务
+                        consumerConfig = new ConsumerConfig<DLPlatformService>()
+                                .setInterfaceId(DLPlatformService.class.getName()) // 指定接口
+                                .setProtocol("bolt") // 指定协议
+                                .setDirectUrl("bolt://127.0.0.1:12200"); // 指定直连地址
+                        // 生成代理类
+                        dlPlatformService = consumerConfig.refer();
+                    }
+                }
+            }
+
+            // 数据处理
+            ObjectMapper objectMapper = new ObjectMapper();
+            String recieve = new String(message.getPayload());
+            UpEntity upEntity = objectMapper.readValue(recieve, UpEntity.class);
+
+            // 调用服务
+            if( dlPlatformService.updateVideoMessage(
+                    upEntity.getDeviceId(),
+                    upEntity.getMessage(),
+                    upEntity.getData()
+            ).equals("OK") ){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                System.out.println(df.format(new Date()) + " 上传成功");
+            }
+        } catch (Exception e) {
+
+        }
     }
-        // 在这里解析后，直接http方法，发送到指定controller
 }

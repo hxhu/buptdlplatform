@@ -7,6 +7,10 @@ package com.bupt.dlplatform;
  * Created by Administrator on 17-2-10.
  */
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
+import com.alipay.sofa.rpc.config.ServerConfig;
+import com.bupt.dlplatform.rpc.MQTTService;
+import com.bupt.dlplatform.rpc.MQTTServiceImpl;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
@@ -31,12 +35,12 @@ public class ServerMQTT {  // 下发 down
     //定义MQTT的ID，可以在MQTT服务配置中指定
     private static final String clientid = "centerSender";
 
-    private MqttClient client;
-    private MqttTopic topic11;
+    public MqttClient client;
+    public MqttTopic topic11;
     private String userName = "p8e0buw/bupt";
     private String passWord = "QBeYiSPj7p1ZoPZb";
 
-    private MqttMessage message;
+    public MqttMessage message;
 
     /**
      * 构造函数
@@ -81,8 +85,6 @@ public class ServerMQTT {  // 下发 down
             MqttException {
         MqttDeliveryToken token = topic.publish(message);
         token.waitForCompletion();
-        System.out.println("message is published completely! "
-                + token.isComplete());
     }
 
 
@@ -92,16 +94,16 @@ public class ServerMQTT {  // 下发 down
      * @throws MqttException
      */
     public static void main(String[] args) throws MqttException {
-        // 这部分 分布式在service中写，直接调用
-        // 发送后关闭
-        String data = "{\"command\":\"sendModel,boardcast\",\"data\":\"/models,/yolov3.weights\",\"target\":null,\"timestamp\":1607012099}";
+        ServerConfig serverConfig = new ServerConfig()
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12400) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
 
-        ServerMQTT server = new ServerMQTT();
-        server.message = new MqttMessage();
-        server.message.setQos(1);
-        server.message.setRetained(true);
-        server.message.setPayload(data.getBytes());
-        server.publish(server.topic11 , server.message);
-        server.client.disconnect();
+        ProviderConfig<MQTTService> providerConfig = new ProviderConfig<MQTTService>()
+                .setInterfaceId(MQTTService.class.getName()) // 指定接口
+                .setRef(new MQTTServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
+
+        providerConfig.export(); // 发布服务
     }
 }

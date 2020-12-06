@@ -1,5 +1,10 @@
 package com.bupt.dlplatform;
 
+import com.alipay.sofa.rpc.config.ProviderConfig;
+import com.alipay.sofa.rpc.config.ServerConfig;
+import com.bupt.dlplatform.rpc.DLPlatformService;
+import com.bupt.dlplatform.rpc.DLPlatformServiceImpl;
+import com.bupt.dlplatform.rpc.MQTTService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +25,19 @@ public class ServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
+
+        // SofaRPC启动
+        ServerConfig serverConfig = new ServerConfig()
+                .setProtocol("bolt") // 设置一个协议，默认bolt
+                .setPort(12200) // 设置一个端口，默认12200
+                .setDaemon(false); // 非守护线程
+
+        ProviderConfig<DLPlatformService> providerConfig = new ProviderConfig<DLPlatformService>()
+                .setInterfaceId(DLPlatformService.class.getName()) // 指定接口
+                .setRef(new DLPlatformServiceImpl()) // 指定实现
+                .setServer(serverConfig); // 指定服务端
+
+        providerConfig.export(); // 发布服务
     }
 
     @Bean
