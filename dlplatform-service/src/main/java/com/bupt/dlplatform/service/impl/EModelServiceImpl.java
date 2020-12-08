@@ -219,6 +219,8 @@ public class EModelServiceImpl implements EModelService {
     public ResponseVO pushModelWithDevices(PushModelInputVO pushModelInputVO){
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
+        System.out.println( pushModelInputVO.toString() );
+
         try {
             // 双重检验锁
             if( mqttService == null ){
@@ -235,11 +237,20 @@ public class EModelServiceImpl implements EModelService {
                 }
             }
 
+            // 查询模型
+            EModelEntity eModelEntity;
+            Optional<EModelEntity> opt = eModelRepository.findById(pushModelInputVO.getModelId());
+            if( opt.isPresent() && opt.get().getIsDeleted() == 0 ){
+                eModelEntity = opt.get();
+            }else{
+                throw new ServiceException("未找到该数据");
+            }
+
             if( mqttService.pushModel(
                     pushModelInputVO.getDeviceIds(),
                     pushModelInputVO.getModelId(),
-                    "yolov3.weights",
-                    "points").equals("ERROR") ){
+                    eModelEntity.getModelLocation(),
+                    pushModelInputVO.getType()).equals("ERROR") ){
                 new ServiceException("发送数据失败");
             }
 

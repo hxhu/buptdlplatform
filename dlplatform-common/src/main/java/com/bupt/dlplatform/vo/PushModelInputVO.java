@@ -17,4 +17,6 @@ public class PushModelInputVO {
     private ArrayList<String> deviceIds;
 
     private String modelId;
+
+    private String type; // points  boardcast
 }

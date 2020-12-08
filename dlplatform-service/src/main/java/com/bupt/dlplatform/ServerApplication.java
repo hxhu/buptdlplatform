@@ -22,6 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableEurekaClient
 @SpringBootApplication
 public class ServerApplication {
+    // 先打开MQTT微服务，再打开本服务
 
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
