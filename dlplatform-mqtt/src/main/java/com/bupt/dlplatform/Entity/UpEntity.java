@@ -17,4 +17,6 @@ public class UpEntity {
     private String message; // videoMessage
 
     private String data; // modelId
+
+    private Long timestamp;
 }

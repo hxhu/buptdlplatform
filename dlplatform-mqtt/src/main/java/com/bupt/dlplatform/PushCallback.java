@@ -99,14 +99,30 @@ public class PushCallback implements MqttCallback {
             String recieve = new String(message.getPayload());
             UpEntity upEntity = objectMapper.readValue(recieve, UpEntity.class);
 
-            // 调用服务
-            if( dlPlatformService.updateVideoMessage(
-                    upEntity.getDeviceId(),
-                    upEntity.getMessage(),
-                    upEntity.getData()
-            ).equals("OK") ){
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                System.out.println(df.format(new Date()) + " 上传成功");
+            String messageType = upEntity.getMessage();
+
+            if( messageType.equals("heartbeat") ){  // 心跳上传
+                // 调用服务
+                if( dlPlatformService.updateERHeartbeat(
+                        upEntity.getDeviceId(),
+                        upEntity.getMessage(),
+                        upEntity.getData(),
+                        upEntity.getTimestamp()
+                ).equals("OK") ){
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                    System.out.println(df.format(new Date()) + " 心跳上传成功");
+                }
+            }else{ // 视频信息上传
+                // 调用服务
+                if( dlPlatformService.updateVideoMessage(
+                        upEntity.getDeviceId(),
+                        upEntity.getMessage(),
+                        upEntity.getData(),
+                        upEntity.getTimestamp()
+                ).equals("OK") ){
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                    System.out.println(df.format(new Date()) + " 视频信息上传成功");
+                }
             }
         } catch (Exception e) {
 
