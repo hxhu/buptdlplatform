@@ -6,12 +6,10 @@ import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EModelRepository;
 import com.bupt.dlplatform.model.EModelEntity;
 import com.bupt.dlplatform.rpc.MQTTService;
+import com.bupt.dlplatform.service.ELogService;
 import com.bupt.dlplatform.service.EModelService;
 import com.bupt.dlplatform.util.IdGenerator;
-import com.bupt.dlplatform.vo.EModelInputVO;
-import com.bupt.dlplatform.vo.EModelOutputVO;
-import com.bupt.dlplatform.vo.PushModelInputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
+import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +30,9 @@ public class EModelServiceImpl implements EModelService {
 
     @Autowired
     private EModelRepository eModelRepository;
+
+    @Autowired
+    private ELogService eLogService;
 
     private volatile ConsumerConfig<MQTTService> consumerConfig = null;
     private MQTTService mqttService = null;
@@ -57,6 +58,13 @@ public class EModelServiceImpl implements EModelService {
             eModelEntity.setIsDeleted(0);
 
             eModelRepository.save(eModelEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    eModelEntity.getId(),
+                    "",
+                    "-1",
+                    "增加模型",
+                    System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -105,6 +113,13 @@ public class EModelServiceImpl implements EModelService {
             }
 
             eModelRepository.save(eModelEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    eModelEntity.getId(),
+                    "",
+                    "-3",
+                    "修改模型",
+                    System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -197,6 +212,13 @@ public class EModelServiceImpl implements EModelService {
             eModelEntity.setIsDeleted(1);
 
             eModelRepository.save(eModelEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    eModelEntity.getId(),
+                    "",
+                    "-2",
+                    "修改模型",
+                    System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -252,6 +274,16 @@ public class EModelServiceImpl implements EModelService {
                     eModelEntity.getModelLocation(),
                     pushModelInputVO.getType()).equals("ERROR") ){
                 new ServiceException("发送数据失败");
+            }
+
+            for( String deviceId : pushModelInputVO.getDeviceIds() ){
+                eLogService.addELog(new ELogInputVO(
+                        null,
+                        pushModelInputVO.getModelId(),
+                        deviceId,
+                        "-2，2",
+                        "推送模型到设备",
+                        System.currentTimeMillis()));
             }
 
             responseVO.setCode(ResponseCode.OK.value());

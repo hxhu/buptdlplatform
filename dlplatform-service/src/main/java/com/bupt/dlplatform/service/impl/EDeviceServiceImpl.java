@@ -3,15 +3,14 @@ package com.bupt.dlplatform.service.impl;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EDeviceRepository;
+import com.bupt.dlplatform.mapper.ELogRepository;
 import com.bupt.dlplatform.mapper.EModelRepository;
 import com.bupt.dlplatform.model.EDeviceEntity;
 import com.bupt.dlplatform.model.EModelEntity;
 import com.bupt.dlplatform.service.EDeviceService;
+import com.bupt.dlplatform.service.ELogService;
 import com.bupt.dlplatform.util.IdGenerator;
-import com.bupt.dlplatform.vo.EDeviceInputVO;
-import com.bupt.dlplatform.vo.EDeviceOutputVO;
-import com.bupt.dlplatform.vo.EModelOutputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
+import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,9 @@ public class EDeviceServiceImpl implements EDeviceService {
 
     @Autowired
     private EModelRepository eModelRepository;
+
+    @Autowired
+    private ELogService eLogService;
 
     /**
      * 增加设备
@@ -59,6 +61,13 @@ public class EDeviceServiceImpl implements EDeviceService {
             eDeviceEntity.setIsDeleted(0);
 
             eDeviceRepository.save(eDeviceEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    "",
+                    eDeviceInputVO.getId(),
+                    "1",
+                    "增加设备",
+                    System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -110,6 +119,14 @@ public class EDeviceServiceImpl implements EDeviceService {
             }
 
             eDeviceRepository.save(eDeviceEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    "",
+                    eDeviceInputVO.getId(),
+                    "3",
+                    "修改设备",
+                    System.currentTimeMillis()));
+
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -222,6 +239,13 @@ public class EDeviceServiceImpl implements EDeviceService {
             eDeviceEntity.setIsDeleted(1);
 
             eDeviceRepository.save(eDeviceEntity);
+            eLogService.addELog(new ELogInputVO(
+                    null,
+                    "",
+                    deviceId,
+                    "2",
+                    "删除设备",
+                    System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
             responseVO.setMsg(ResponseCode.OK.getDescription());
