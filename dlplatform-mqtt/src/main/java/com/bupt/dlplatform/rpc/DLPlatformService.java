@@ -7,4 +7,6 @@ public interface DLPlatformService {
     public String updateVideoMessage(String deviceId, String videoMessage, String modelId, Long timestamp);
 
     public String updateERHeartbeat( String deviceId, String type, String status, Long timestamp );
+
+    public String updateModelMessage( String deviceId, String type, String modelId, Long timestamp);
 }

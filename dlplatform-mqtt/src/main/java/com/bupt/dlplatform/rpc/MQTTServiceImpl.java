@@ -32,6 +32,7 @@ public class MQTTServiceImpl implements MQTTService {
             ObjectMapper objectMapper = new ObjectMapper();
             String sendData = objectMapper.writeValueAsString(downEntity);
 
+            System.out.println(sendData);
             // MQTT发送
             ServerMQTT server = new ServerMQTT();
             server.message = new MqttMessage();

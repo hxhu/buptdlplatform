@@ -60,6 +60,7 @@ public class ERHeartbeatServiceImpl implements ERHeartbeatService {
      */
     public ResponseVO updateERHeartbeat(ERHeartbeatInputVO erHeartbeatInputVO){
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+        System.out.println(erHeartbeatInputVO.toString());
 
         try {
             return addERHeartbeat(erHeartbeatInputVO);

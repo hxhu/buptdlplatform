@@ -18,6 +18,21 @@ package com.bupt.dlplatform;
  * Description:
  * @author admin
  * 2017年2月10日下午18:04:07
+ * <p>
+ * <p>
+ * Description:
+ * @author admin
+ * 2017年2月10日下午18:04:07
+ * <p>
+ * <p>
+ * Description:
+ * @author admin
+ * 2017年2月10日下午18:04:07
+ * <p>
+ * <p>
+ * Description:
+ * @author admin
+ * 2017年2月10日下午18:04:07
  */
 /**
  *
@@ -74,10 +89,6 @@ public class PushCallback implements MqttCallback {
     }
 
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        // subscribe后得到的消息会执行到这里面
-//        System.out.println("接收消息主题 : " + topic);
-//        System.out.println("接收消息Qos : " + message.getQos());
-//        System.out.println("接收消息内容 : " + new String(message.getPayload()));
         try {
             // 双重检验锁
             if (dlPlatformService == null) {
@@ -101,28 +112,40 @@ public class PushCallback implements MqttCallback {
 
             String messageType = upEntity.getMessage();
 
-            if( messageType.equals("heartbeat") ){  // 心跳上传
-                // 调用服务
-                if( dlPlatformService.updateERHeartbeat(
-                        upEntity.getDeviceId(),
-                        upEntity.getMessage(),
-                        upEntity.getData(),
-                        upEntity.getTimestamp()
-                ).equals("OK") ){
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                    System.out.println(df.format(new Date()) + " 心跳上传成功");
-                }
-            }else{ // 视频信息上传
-                // 调用服务
-                if( dlPlatformService.updateVideoMessage(
-                        upEntity.getDeviceId(),
-                        upEntity.getMessage(),
-                        upEntity.getData(),
-                        upEntity.getTimestamp()
-                ).equals("OK") ){
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                    System.out.println(df.format(new Date()) + " 视频信息上传成功");
-                }
+            switch (messageType) {
+                case "heartbeat":    // 心跳上传
+                    if (dlPlatformService.updateERHeartbeat(
+                            upEntity.getDeviceId(),
+                            upEntity.getMessage(),
+                            upEntity.getData(),      // "0" , "1", "2"
+                            upEntity.getTimestamp()
+                    ).equals("OK")) {
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                        System.out.println(df.format(new Date()) + " 心跳上传成功");
+                    }
+                    break;
+                case "videoMessage":  // 视频信息上传
+                    if (dlPlatformService.updateVideoMessage(
+                            upEntity.getDeviceId(),
+                            upEntity.getMessage(),
+                            upEntity.getData(),   // 视频信息
+                            upEntity.getTimestamp()
+                    ).equals("OK")) {
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                        System.out.println(df.format(new Date()) + " 视频信息上传成功");
+                    }
+                    break;
+                case "modelUpdate":   //  模型更新结果
+                    if (dlPlatformService.updateModelMessage(
+                            upEntity.getDeviceId(),
+                            upEntity.getMessage(),
+                            upEntity.getData(),   // modelId
+                            upEntity.getTimestamp()
+                    ).equals("OK")) {
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                        System.out.println(df.format(new Date()) + " 模型更新上传成功");
+                    }
+                    break;
             }
         } catch (Exception e) {
 

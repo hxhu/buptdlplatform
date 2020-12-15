@@ -222,6 +222,15 @@ public class EModelServiceImpl implements EModelService {
         System.out.println( pushModelInputVO.toString() );
 
         try {
+            // 查询模型
+            EModelEntity eModelEntity;
+            Optional<EModelEntity> opt = eModelRepository.findById(pushModelInputVO.getModelId());
+            if( opt.isPresent() && opt.get().getIsDeleted() == 0 ){
+                eModelEntity = opt.get();
+            }else{
+                throw new ServiceException("未找到该数据");
+            }
+
             // 双重检验锁
             if( mqttService == null ){
                 synchronized (MQTTService.class){
@@ -235,15 +244,6 @@ public class EModelServiceImpl implements EModelService {
                         mqttService = consumerConfig.refer();
                     }
                 }
-            }
-
-            // 查询模型
-            EModelEntity eModelEntity;
-            Optional<EModelEntity> opt = eModelRepository.findById(pushModelInputVO.getModelId());
-            if( opt.isPresent() && opt.get().getIsDeleted() == 0 ){
-                eModelEntity = opt.get();
-            }else{
-                throw new ServiceException("未找到该数据");
             }
 
             if( mqttService.pushModel(

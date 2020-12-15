@@ -5,6 +5,7 @@ import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EDeviceRepository;
 import com.bupt.dlplatform.model.EDeviceEntity;
 import com.bupt.dlplatform.vo.EDeviceInputVO;
+import com.bupt.dlplatform.vo.EModelInputVO;
 import com.bupt.dlplatform.vo.ERHeartbeatInputVO;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,40 @@ public class DLPlatformServiceImpl implements DLPlatformService {
             erHeartbeatInputVO.setTimestamp(timestamp);
 
             JSONObject body = JSONObject.fromObject(erHeartbeatInputVO);
+            HttpEntity<String> formEntity = new HttpEntity<String>(body.toString(), headers);
+            JSONObject json = restTemplate.postForEntity(url, formEntity, JSONObject.class).getBody();
+
+            if( !json.get("code").equals("2000") ){
+                new ServiceException("上传修改失败");
+            }
+
+        }catch ( Exception e ){
+            e.printStackTrace();
+            return "ERROR";
+        }
+
+        return "OK";
+    }
+
+    @Override
+    public String updateModelMessage( String deviceId, String type, String modelId, Long timestamp){
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+            String url = "http://localhost:18800/dlplatform/EDevice/update";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            EDeviceInputVO eDeviceInputVO = new EDeviceInputVO();
+            eDeviceInputVO.setId(deviceId);
+            eDeviceInputVO.setDeviceName("");
+            eDeviceInputVO.setDeviceDesc("");
+            eDeviceInputVO.setVideoRtsp("");
+            eDeviceInputVO.setVideoMessage("");
+            eDeviceInputVO.setCurrentModelId(modelId);
+
+            JSONObject body = JSONObject.fromObject(eDeviceInputVO);
             HttpEntity<String> formEntity = new HttpEntity<String>(body.toString(), headers);
             JSONObject json = restTemplate.postForEntity(url, formEntity, JSONObject.class).getBody();
 

@@ -103,6 +103,9 @@ public class EDeviceServiceImpl implements EDeviceService {
                 eDeviceEntity.setVideoMessage( eDeviceInputVO.getVideoMessage() );
             }
             if( eDeviceInputVO.getCurrentModelId() != null && !eDeviceInputVO.getCurrentModelId().equals("") ){
+                if( !eModelRepository.existsById( eDeviceInputVO.getCurrentModelId() ) ){
+                    throw new ServiceException("模型不存在");
+                }
                 eDeviceEntity.setCurrentModelId( eDeviceInputVO.getCurrentModelId() );
             }
 
