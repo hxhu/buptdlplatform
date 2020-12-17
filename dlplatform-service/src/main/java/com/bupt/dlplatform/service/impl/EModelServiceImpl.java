@@ -3,7 +3,9 @@ package com.bupt.dlplatform.service.impl;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
+import com.bupt.dlplatform.mapper.EDeviceRepository;
 import com.bupt.dlplatform.mapper.EModelRepository;
+import com.bupt.dlplatform.model.EDeviceEntity;
 import com.bupt.dlplatform.model.EModelEntity;
 import com.bupt.dlplatform.rpc.MQTTService;
 import com.bupt.dlplatform.service.ELogService;
@@ -30,6 +32,9 @@ public class EModelServiceImpl implements EModelService {
 
     @Autowired
     private EModelRepository eModelRepository;
+
+    @Autowired
+    private EDeviceRepository eDeviceRepository;
 
     @Autowired
     private ELogService eLogService;
@@ -217,7 +222,7 @@ public class EModelServiceImpl implements EModelService {
                     eModelEntity.getId(),
                     "",
                     "-2",
-                    "修改模型",
+                    "删除模型",
                     System.currentTimeMillis()));
 
             responseVO.setCode(ResponseCode.OK.value());
@@ -252,6 +257,19 @@ public class EModelServiceImpl implements EModelService {
             }else{
                 throw new ServiceException("未找到该数据");
             }
+
+            // 检查设备
+            for( String deviceId : pushModelInputVO.getDeviceIds() ){
+                Optional<EDeviceEntity> tmp = eDeviceRepository.findById(deviceId);
+                if( !tmp.isPresent() ){
+                    throw new ServiceException("未找到该数据");
+                }
+
+                if( tmp.get().getIsDeleted() != 0 ){
+                    throw new ServiceException("该数据已经删除");
+                }
+            }
+
 
             // 双重检验锁
             if( mqttService == null ){
