@@ -18,7 +18,7 @@ public class DownEntity {
 
     private String data; // "/models,/yolov3.weights,1234567890"
 
-    private String target; // "null"  "xxx,yyy,zzz"
+    private List<String> target; // "null"  "xxx,yyy,zzz"
 
     private Long timestamp;
 }

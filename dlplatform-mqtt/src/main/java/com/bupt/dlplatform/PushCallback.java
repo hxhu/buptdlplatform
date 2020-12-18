@@ -146,6 +146,18 @@ public class PushCallback implements MqttCallback {
                         System.out.println(df.format(new Date()) + " 模型更新上传成功");
                     }
                     break;
+                case "fileUpdate":   //  模型更新结果
+                    System.out.println( upEntity.toString() );
+                    if (dlPlatformService.updateFileMessage(
+                            upEntity.getDeviceId(),
+                            upEntity.getMessage(),
+                            upEntity.getData(),   // fileId
+                            upEntity.getTimestamp()
+                    ).equals("OK")) {
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                        System.out.println(df.format(new Date()) + " 文件更新上传成功");
+                    }
+                    break;
             }
         } catch (Exception e) {
 

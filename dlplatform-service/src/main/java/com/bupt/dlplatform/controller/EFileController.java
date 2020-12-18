@@ -3,6 +3,7 @@ package com.bupt.dlplatform.controller;
 import com.bupt.dlplatform.service.EFileService;
 import com.bupt.dlplatform.vo.EFileInputVO;
 import com.bupt.dlplatform.vo.EFileOutputVO;
+import com.bupt.dlplatform.vo.PushFileInputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,5 +70,15 @@ public class EFileController {
     @DeleteMapping("/delete")
     public ResponseVO deleteEFile(@RequestParam(value = "fileId") String fileId) {
         return eFileService.deleteEFile(fileId);
+    }
+
+    /**
+     * 推送文件
+     *
+     * @return
+     */
+    @PostMapping("/pushFile")
+    public ResponseVO pushFileWithDevices(@RequestBody PushFileInputVO pushFileInputVO){
+        return eFileService.pushFileWithDevices(pushFileInputVO);
     }
 }

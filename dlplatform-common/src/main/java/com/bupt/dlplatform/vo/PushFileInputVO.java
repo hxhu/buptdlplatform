@@ -18,5 +18,5 @@ public class PushFileInputVO {
 
     private String fileId;
 
-    private String type; // 自己定义的标签
+    private String type;
 }

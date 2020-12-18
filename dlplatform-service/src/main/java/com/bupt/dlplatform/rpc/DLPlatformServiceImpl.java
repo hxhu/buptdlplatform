@@ -3,10 +3,16 @@ package com.bupt.dlplatform.rpc;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EDeviceRepository;
+import com.bupt.dlplatform.mapper.EFileRepository;
 import com.bupt.dlplatform.model.EDeviceEntity;
+import com.bupt.dlplatform.model.EFileEntity;
+import com.bupt.dlplatform.model.EModelEntity;
 import com.bupt.dlplatform.vo.EDeviceInputVO;
 import com.bupt.dlplatform.vo.EModelInputVO;
 import com.bupt.dlplatform.vo.ERHeartbeatInputVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +27,16 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by huhx on 2020/12/6
  */
+@Service
+@Slf4j
 public class DLPlatformServiceImpl implements DLPlatformService {
 
     @Override
@@ -117,6 +128,25 @@ public class DLPlatformServiceImpl implements DLPlatformService {
                 new ServiceException("上传修改失败");
             }
 
+        }catch ( Exception e ){
+            e.printStackTrace();
+            return "ERROR";
+        }
+
+        return "OK";
+    }
+
+    @Override
+    public String updateFileMessage( String deviceId, String type, String fileId, Long timestamp){
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+            String url = "http://localhost:18800/dlplatform/EDevice/updateFile?" + "deviceId=" + deviceId + "&fileId=" + fileId;
+            JSONObject json = restTemplate.getForObject(url, JSONObject.class);
+
+            if( !json.get("code").equals("2000") ){
+                new ServiceException("更新文件失败");
+            }
         }catch ( Exception e ){
             e.printStackTrace();
             return "ERROR";

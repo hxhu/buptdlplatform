@@ -1,8 +1,14 @@
 package com.bupt.dlplatform.vo;
 
 import com.bupt.dlplatform.model.EDeviceEntity;
+import com.bupt.dlplatform.model.EFileEntity;
 import com.bupt.dlplatform.model.EModelEntity;
 import lombok.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by huhx on 2020/12/4
@@ -31,7 +37,9 @@ public class EDeviceOutputVO {
 
     private EModelOutputVO eModelOutputVO; // 当前模型详细信息
 
-    public EDeviceOutputVO( EDeviceEntity eDeviceEntity, EModelEntity eModelEntity ){
+    private Set<EFileOutputVO> currentFileSet;
+
+    public EDeviceOutputVO(EDeviceEntity eDeviceEntity, EModelEntity eModelEntity, Set<EFileEntity> fileSet){
         this.id = eDeviceEntity.getId();
         this.deviceName = eDeviceEntity.getDeviceName();
         this.deviceDesc = eDeviceEntity.getDeviceDesc();
@@ -39,5 +47,11 @@ public class EDeviceOutputVO {
         this.videoMessage = eDeviceEntity.getVideoMessage();
         this.currentModelId = eDeviceEntity.getCurrentModelId();
         this.eModelOutputVO = new EModelOutputVO(eModelEntity);
+
+        Set<EFileOutputVO> set = new HashSet<EFileOutputVO>();
+        for( EFileEntity eFileEntity: fileSet ){
+            set.add( new EFileOutputVO(eFileEntity) );
+        }
+        this.currentFileSet = set;
     }
 }

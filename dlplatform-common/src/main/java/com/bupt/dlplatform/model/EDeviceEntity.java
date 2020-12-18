@@ -1,8 +1,11 @@
 package com.bupt.dlplatform.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.Id;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by huhx on 2020/12/4
@@ -31,4 +34,6 @@ public class EDeviceEntity {
     private String videoMessage;
 
     private String currentModelId;
+
+    private Set<String> currentFileIdSet;
 }

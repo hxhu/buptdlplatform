@@ -21,6 +21,12 @@ public interface EDeviceService {
     public ResponseVO updateEDevice(EDeviceInputVO eDeviceInputVO);
 
     /**
+     * 更新设备的配置文件
+     * @return
+     */
+    public ResponseVO updateEFileIdSet(String deviceId, String fileId);
+
+    /**
      * 查询设备
      * Id方式
      * @return
@@ -38,4 +44,10 @@ public interface EDeviceService {
      * @return
      */
     public ResponseVO deleteEDevice(String deviceId);
+
+    /**
+     * 删除某个文件
+     * @return
+     */
+    public ResponseVO deleteFile(String deviceId, String fileId);
 }

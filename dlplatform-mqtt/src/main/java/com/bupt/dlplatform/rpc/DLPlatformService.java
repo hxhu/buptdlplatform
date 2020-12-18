@@ -9,4 +9,6 @@ public interface DLPlatformService {
     public String updateERHeartbeat( String deviceId, String type, String status, Long timestamp );
 
     public String updateModelMessage( String deviceId, String type, String modelId, Long timestamp);
+
+    public String updateFileMessage( String deviceId, String type, String fileId, Long timestamp);
 }

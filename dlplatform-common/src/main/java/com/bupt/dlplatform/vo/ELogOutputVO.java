@@ -40,6 +40,6 @@ public class ELogOutputVO {
         this.timestamp = eLogEntity.getTimestamp();
 
         this.eModelOutputVO = new EModelOutputVO(eModelEntity);
-        this.eDeviceOutputVO = new EDeviceOutputVO(eDeviceEntity, eModelEntity);
+        this.eDeviceOutputVO = new EDeviceOutputVO(eDeviceEntity, eModelEntity,null);
     }
 }

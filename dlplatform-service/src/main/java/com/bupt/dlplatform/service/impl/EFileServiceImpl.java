@@ -40,6 +40,9 @@ public class EFileServiceImpl implements EFileService {
     @Autowired
     private ELogService eLogService;
 
+    private volatile ConsumerConfig<MQTTService> consumerConfig = null;
+    private MQTTService mqttService = null;
+
     /**
      * 增加文件
      *
@@ -259,28 +262,28 @@ public class EFileServiceImpl implements EFileService {
             }
 
 
-//            // 双重检验锁
-//            if( mqttService == null ){
-//                synchronized (MQTTService.class){
-//                    if( mqttService == null ){
-//                        // PRC调用服务
-//                        consumerConfig = new ConsumerConfig<MQTTService>()
-//                                .setInterfaceId(MQTTService.class.getName()) // 指定接口
-//                                .setProtocol("bolt") // 指定协议
-//                                .setDirectUrl("bolt://127.0.0.1:12400"); // 指定直连地址
-//                        // 生成代理类
-//                        mqttService = consumerConfig.refer();
-//                    }
-//                }
-//            }
+            // 双重检验锁
+            if( mqttService == null ){
+                synchronized (MQTTService.class){
+                    if( mqttService == null ){
+                        // PRC调用服务
+                        consumerConfig = new ConsumerConfig<MQTTService>()
+                                .setInterfaceId(MQTTService.class.getName()) // 指定接口
+                                .setProtocol("bolt") // 指定协议
+                                .setDirectUrl("bolt://127.0.0.1:12400"); // 指定直连地址
+                        // 生成代理类
+                        mqttService = consumerConfig.refer();
+                    }
+                }
+            }
 
-//            if( mqttService.pushModel(
-//                    pushModelInputVO.getDeviceIds(),
-//                    pushModelInputVO.getModelId(),
-//                    eModelEntity.getModelLocation(),
-//                    pushModelInputVO.getType()).equals("ERROR") ){
-//                new ServiceException("发送数据失败");
-//            }
+            if( mqttService.fileModel(
+                    pushFileInputVO.getDeviceIds(),
+                    pushFileInputVO.getFileId(),
+                    eFileEntity.getFileLocation(),
+                    pushFileInputVO.getType()).equals("ERROR") ){
+                new ServiceException("发送数据失败");
+            }
 
             for (String deviceId : pushFileInputVO.getDeviceIds()) {
                 eLogService.addELog(new ELogInputVO(

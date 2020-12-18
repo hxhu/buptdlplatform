@@ -7,4 +7,6 @@ import java.util.List;
  */
 public interface MQTTService {
     public String pushModel(List<String> deviceIds, String modelId, String modelLocation, String type);
+
+    public String fileModel(List<String> deviceIds, String fileId, String fileLocation, String type);
 }
