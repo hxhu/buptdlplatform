@@ -46,8 +46,8 @@ public interface EDeviceService {
     public ResponseVO deleteEDevice(String deviceId);
 
     /**
-     * 删除某个文件
+     * 删除文件
      * @return
      */
-    public ResponseVO deleteFile(String deviceId, String fileId);
+    public ResponseVO deleteFile(String deviceId, List<String> fileIds);
 }

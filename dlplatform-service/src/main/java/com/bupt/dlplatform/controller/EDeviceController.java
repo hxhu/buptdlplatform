@@ -81,11 +81,11 @@ public class EDeviceController {
     }
 
     /**
-     * 删除某个文件
+     * 删除文件
      * @return
      */
-    @DeleteMapping("/deleteFile")
-    public ResponseVO deleteFile(@RequestParam(value = "deviceId")String deviceId, @RequestParam(value = "fileId")String fileId){
-        return eDeviceService.deleteFile(deviceId, fileId);
+    @PostMapping("/deleteFile")
+    public ResponseVO deleteFile(@RequestParam(value = "deviceId")String deviceId, @RequestParam(value = "fileIds")List<String> fileIds){
+        return eDeviceService.deleteFile(deviceId, fileIds);
     }
 }

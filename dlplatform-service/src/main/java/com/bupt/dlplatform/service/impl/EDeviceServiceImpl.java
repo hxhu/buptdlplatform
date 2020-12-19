@@ -370,7 +370,7 @@ public class EDeviceServiceImpl implements EDeviceService {
      * 删除某个文件
      * @return
      */
-    public ResponseVO deleteFile(String deviceId, String fileId){
+    public ResponseVO deleteFile(String deviceId, List<String> fileIds){
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -385,10 +385,12 @@ public class EDeviceServiceImpl implements EDeviceService {
             Set<String> fileIdSet;
             if (eDeviceEntity.getCurrentFileIdSet() != null) {
                 fileIdSet = eDeviceEntity.getCurrentFileIdSet();
-                if( fileIdSet.contains(fileId) ){
-                    fileIdSet.remove(fileId);
-                }else{
-                    throw new ServiceException("未找到该文件，删除失败");
+                for( String fileId : fileIds ){
+                    if( fileIdSet.contains(fileId) ){
+                        fileIdSet.remove(fileId);
+                    }else{
+                        throw new ServiceException("未找到该文件，删除失败");
+                    }
                 }
             }else{
                 throw new ServiceException("未找到该文件，删除失败");
