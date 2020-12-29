@@ -19,7 +19,7 @@ public class EDataSetEntity {
     @Id
     private String id;
 
-    private String dataSetName;
+    private String dataSetName;  //数据集路径为 /dataset/{id}
 
     private String dataDesc;
 

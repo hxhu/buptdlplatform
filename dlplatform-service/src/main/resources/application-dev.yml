@@ -95,3 +95,10 @@ ftp:
   host: 47.94.44.231
   username: ftpdir
   password: 123456
+
+dataset:
+  rootPath: D:\\dataset\\
+  vocJPGPath: \\JPEGImages\\
+  vocXMLPath: \\Annotations\\
+  vocLabelPath: \\ImageSets\\
+  vocTxtPath: Main\\

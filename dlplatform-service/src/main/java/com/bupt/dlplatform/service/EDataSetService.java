@@ -1,6 +1,8 @@
 package com.bupt.dlplatform.service;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.vo.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,4 +38,23 @@ public interface EDataSetService {
      * @return
      */
     public ResponseVO deleteEDataSet(String dataSetId);
+
+    /**
+     * 上传图片
+     * @param avatar
+     * @return
+     */
+    public R uploadImage(MultipartFile avatar, String dataSetId);
+
+    /**
+     * 上传标注文件
+     * @param avatar
+     * @return
+     */
+    public R uploadAnnotation(MultipartFile avatar, String dataSetId);
+
+    /**
+     * 匹配文件名上传
+     */
+    public ResponseVO uploadImageSet(UploadImageSetInputVO uploadImageSetInputVO);
 }

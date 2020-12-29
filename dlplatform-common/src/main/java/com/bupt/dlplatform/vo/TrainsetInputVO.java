@@ -9,7 +9,6 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class TrainsetInputVO extends BaseInputVO {
     Date uploadTime;
     String trainsetId;
