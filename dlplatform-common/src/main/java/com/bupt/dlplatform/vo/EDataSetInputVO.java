@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.vo;
 
+import com.bupt.dlplatform.model.EDataSetEntity;
 import lombok.*;
 
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class EDataSetInputVO {
 
     private String dataSetName;
 
-    private String dataDesc;
+    private String dataSetDesc;
 
     private String type; // ssd yolo
 }

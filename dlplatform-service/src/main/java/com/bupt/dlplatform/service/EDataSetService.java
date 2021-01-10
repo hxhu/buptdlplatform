@@ -2,6 +2,7 @@ package com.bupt.dlplatform.service;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.vo.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,6 +24,12 @@ public interface EDataSetService {
      * @return
      */
     public ResponseVO updateEDataSet(EDataSetInputVO eDataSetInputVO);
+
+    /**
+     * 查询数据集列表
+     * @return
+     */
+    public ResponseVO<List<EDataSetOutputVO>> getEDataSetList();
 
     /**
      * 查询数据集

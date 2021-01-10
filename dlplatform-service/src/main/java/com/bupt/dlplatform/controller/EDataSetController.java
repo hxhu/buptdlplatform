@@ -3,10 +3,7 @@ package com.bupt.dlplatform.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.model.common.ConstantProperties;
 import com.bupt.dlplatform.service.EDataSetService;
-import com.bupt.dlplatform.vo.EDataSetInputVO;
-import com.bupt.dlplatform.vo.EDataSetOutputVO;
-import com.bupt.dlplatform.vo.ResponseVO;
-import com.bupt.dlplatform.vo.UploadImageSetInputVO;
+import com.bupt.dlplatform.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
@@ -60,6 +57,15 @@ public class EDataSetController {
     @GetMapping("/getById")
     public ResponseVO<EDataSetOutputVO> getEDataSet(@RequestParam(value = "dataSetId")String dataSetId){
         return eDataSetService.getEDataSet(dataSetId);
+    }
+
+    /**
+     * 查询数据集列表
+     * @return
+     */
+    @GetMapping("/getList")
+    public ResponseVO<List<EDataSetOutputVO>> getEDataSetList(){
+        return eDataSetService.getEDataSetList();
     }
 
     /**

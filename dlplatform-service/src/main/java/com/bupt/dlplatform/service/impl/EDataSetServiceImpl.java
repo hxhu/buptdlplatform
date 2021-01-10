@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedWriter;
@@ -53,7 +54,7 @@ public class EDataSetServiceImpl implements EDataSetService {
             EDataSetEntity eDataSetEntity = new EDataSetEntity();
             eDataSetEntity.setId(idGenerator.nextId());
             eDataSetEntity.setDataSetName(eDataSetInputVO.getDataSetName() != null ? eDataSetInputVO.getDataSetName() : "");
-            eDataSetEntity.setDataDesc(eDataSetInputVO.getDataDesc() != null ? eDataSetInputVO.getDataDesc() : "");
+            eDataSetEntity.setDataSetDesc(eDataSetInputVO.getDataSetDesc() != null ? eDataSetInputVO.getDataSetDesc() : "");
 
             Long nowTime = System.currentTimeMillis();
             eDataSetEntity.setCreateTime(nowTime);
@@ -126,8 +127,8 @@ public class EDataSetServiceImpl implements EDataSetService {
             if (eDataSetInputVO.getDataSetName() != null && !eDataSetInputVO.getDataSetName().equals("")) {
                 eDataSetEntity.setDataSetName(eDataSetInputVO.getDataSetName());
             }
-            if (eDataSetInputVO.getDataDesc() != null && !eDataSetInputVO.getDataDesc().equals("")) {
-                eDataSetEntity.setDataDesc(eDataSetInputVO.getDataDesc());
+            if (eDataSetInputVO.getDataSetDesc() != null && !eDataSetInputVO.getDataSetDesc().equals("")) {
+                eDataSetEntity.setDataSetDesc(eDataSetInputVO.getDataSetDesc());
             }
             if (eDataSetInputVO.getType() != null && !eDataSetInputVO.getType().equals("")) {
                 eDataSetEntity.setType(eDataSetInputVO.getType());
@@ -146,6 +147,38 @@ public class EDataSetServiceImpl implements EDataSetService {
             return responseVO;
         } catch (Exception e) {
             log.error("EDataSet更新异常", e);
+            return responseVO;
+        }
+    }
+
+    /**
+     * 查询数据集列表
+     * @return
+     */
+    public ResponseVO<List<EDataSetOutputVO>> getEDataSetList(){
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            List<EDataSetEntity> tmp = eDataSetRepository.findAll();
+            List<EDataSetEntity> list = new ArrayList<EDataSetEntity>();
+            for (EDataSetEntity eDataSetEntity : tmp) {
+                if (eDataSetEntity.getIsDeleted() == 0) {
+                    list.add(eDataSetEntity);
+                }
+            }
+
+            List<EDataSetOutputVO> result = new ArrayList<EDataSetOutputVO>();
+
+            for (EDataSetEntity eDataSetEntity : list) {
+                result.add(new EDataSetOutputVO(eDataSetEntity));
+            }
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData(result);
+            return responseVO;
+        } catch (Exception e) {
+            log.error("EDataSet查询异常", e);
             return responseVO;
         }
     }

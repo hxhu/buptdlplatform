@@ -21,7 +21,7 @@ public class EDataSetEntity {
 
     private String dataSetName;  //数据集路径为 /dataset/{id}
 
-    private String dataDesc;
+    private String dataSetDesc;
 
     private Long createTime;
 

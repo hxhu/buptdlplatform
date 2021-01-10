@@ -17,7 +17,7 @@ public class EDataSetOutputVO {
 
     private String dataSetName;
 
-    private String dataDesc;
+    private String dataSetDesc;
 
     private Long createTime;
 
@@ -28,7 +28,7 @@ public class EDataSetOutputVO {
     public EDataSetOutputVO(EDataSetEntity eDataSetEntity){
         this.id = eDataSetEntity.getId();
         this.dataSetName = eDataSetEntity.getDataSetName();
-        this.dataDesc = eDataSetEntity.getDataDesc();
+        this.dataSetDesc = eDataSetEntity.getDataSetDesc();
         this.createTime = eDataSetEntity.getCreateTime();
         this.updateTime = eDataSetEntity.getUpdateTime();
         this.type = eDataSetEntity.getType();
