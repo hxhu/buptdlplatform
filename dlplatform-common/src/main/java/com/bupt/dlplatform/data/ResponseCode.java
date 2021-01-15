@@ -10,6 +10,7 @@ public enum ResponseCode {
     OK(2000, "Success"),
     PARAM_INVALID(1000, "缺失参数或无效"),
     FAIL(2020,"Fail to operate"),
+    UNEDITALBE(4040, "训练处于未编辑状态"),
     //熔断专用
     REMOTE_CALL_FAIL(5000, "服务暂时不可用:"),
     UNKNOWN_EXCEPTION(505, "系统异常"),

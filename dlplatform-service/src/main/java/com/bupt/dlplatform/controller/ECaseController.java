@@ -1,11 +1,14 @@
 package com.bupt.dlplatform.controller;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.service.ECaseService;
 import com.bupt.dlplatform.vo.ECaseInputVO;
 import com.bupt.dlplatform.vo.ECaseOutputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by huhx on 2020/12/26
@@ -56,4 +59,97 @@ public class ECaseController {
     public ResponseVO deleteECase(@RequestParam(value = "caseId")String caseId){
         return eCaseService.deleteECase(caseId);
     }
+
+
+
+
+
+    //训练/测试 流程所需方法
+
+    /**
+     * 1.数据集选择
+     *
+     * status: 0-未编辑状态 1-获取数据集列表 2-选定某个数据集
+     * @return
+     */
+    @PostMapping("/chooseDataSet")
+    public ResponseVO<T> chooseDataSet(@RequestParam(value = "caseId")String caseId,
+                                       @RequestParam(value = "dataSetId")String dataSetId,
+                                       @RequestParam(value = "status")Integer status){
+        return eCaseService.chooseDataSet(caseId, dataSetId, status);
+    }
+
+    /**
+     * 2.环境准备
+     *
+     * 0-未编辑状态 1-执行环境准备 2-执行结果查询
+     * @return
+     */
+    @GetMapping("/prepareEnvironment")
+    public ResponseVO prepareEnvironment(@RequestParam(value = "caseId")String caseId,
+                                         @RequestParam(value = "status")Integer status){
+        return eCaseService.prepareEnvironment(caseId, status);
+    }
+
+    /**
+     * 3.开始训练
+     *
+     * 0-未编辑状态 1-执行开始训练 9-查询训练结果
+     * @return
+     */
+    @GetMapping("/startTraining")
+    public ResponseVO startTraining(@RequestParam(value = "caseId")String caseId,
+                                    @RequestParam(value = "status")Integer status){
+        return eCaseService.startTraining(caseId, status);
+    }
+
+    /**
+     * 4.训练情况
+     *
+     * 0-未编辑状态 9-查询训练情况
+     * @return
+     */
+    @GetMapping("/getTrainingCondition")
+    public ResponseVO getTrainingCondition(@RequestParam(value = "caseId")String caseId,
+                                           @RequestParam(value = "status")Integer status){
+        return eCaseService.getTrainingCondition(caseId, status);
+    }
+
+    /**
+     * 5.训练结果
+     *
+     * 0-未编辑状态 9-返回lossList
+     * @return
+     */
+    @GetMapping("/getTrainingResult")
+    public ResponseVO getTrainingResult(@RequestParam(value = "caseId")String caseId,
+                                        @RequestParam(value = "status")Integer status){
+        return eCaseService.getTrainingResult(caseId, status);
+    }
+
+    /**
+     * 6.模型测试
+     *
+     * 0-未编辑状态 1-上传模型 9-查看是否上传
+     * @return
+     */
+    @PostMapping("/testModel")
+    public R testModel(@RequestParam(value = "caseId")String caseId,
+                       @RequestParam(value = "avatar") MultipartFile avatar,
+                       @RequestParam(value = "status")Integer status){
+        return eCaseService.testModel(caseId, avatar, status);
+    }
+
+    /**
+     * 7.测试结果
+     *
+     * 0-未编辑状态 1-执行测试 9-查询测试情况
+     * @return
+     */
+    @GetMapping("/getTestResult")
+    public ResponseVO getTestResult(@RequestParam(value = "caseId")String caseId,
+                                    @RequestParam(value = "status")Integer status){
+        return eCaseService.getTestResult(caseId, status);
+    }
+
 }

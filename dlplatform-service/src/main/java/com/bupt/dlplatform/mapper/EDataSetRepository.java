@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EDataSetRepository extends MongoRepository<EDataSetEntity, String> {
+    boolean existsById(String id);
 }

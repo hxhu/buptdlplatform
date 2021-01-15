@@ -6,39 +6,6 @@ package com.bupt.dlplatform;
  * <p>
  * Description:
  *
- * @author admin
- * 2017年2月10日下午18:04:07
- * <p>
- * <p>
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
- * <p>
- * <p>
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
- * <p>
- * <p>
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
- * <p>
- * <p>
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
- * <p>
- * <p>
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
- */
-/**
- *
- * Description:
- * @author admin
- * 2017年2月10日下午18:04:07
  */
 
 import com.alipay.sofa.rpc.config.ConsumerConfig;
@@ -146,7 +113,7 @@ public class PushCallback implements MqttCallback {
                         System.out.println(df.format(new Date()) + " 模型更新上传成功");
                     }
                     break;
-                case "fileUpdate":   //  模型更新结果
+                case "fileUpdate":   //  文件更新结果
                     System.out.println( upEntity.toString() );
                     if (dlPlatformService.updateFileMessage(
                             upEntity.getDeviceId(),
