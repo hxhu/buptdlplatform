@@ -102,3 +102,8 @@ dataset:
   vocXMLPath: \\Annotations\\
   vocLabelPath: \\ImageSets\\
   vocTxtPath: Main\\
+
+ssd-server:
+  host: 10.112.140.101
+  username: ecssd
+  password: 123456

@@ -2,6 +2,7 @@ package com.bupt.dlplatform.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.service.ECaseService;
+import com.bupt.dlplatform.vo.ChooseDataSetInputVO;
 import com.bupt.dlplatform.vo.ECaseInputVO;
 import com.bupt.dlplatform.vo.ECaseOutputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
@@ -73,10 +74,8 @@ public class ECaseController {
      * @return
      */
     @PostMapping("/chooseDataSet")
-    public ResponseVO<T> chooseDataSet(@RequestParam(value = "caseId")String caseId,
-                                       @RequestParam(value = "dataSetId")String dataSetId,
-                                       @RequestParam(value = "status")Integer status){
-        return eCaseService.chooseDataSet(caseId, dataSetId, status);
+    public ResponseVO<T> chooseDataSet(@RequestBody ChooseDataSetInputVO chooseDataSetInputVO){
+        return eCaseService.chooseDataSet(chooseDataSetInputVO.getCaseId(), chooseDataSetInputVO.getDataSetId(), chooseDataSetInputVO.getStatus());
     }
 
     /**

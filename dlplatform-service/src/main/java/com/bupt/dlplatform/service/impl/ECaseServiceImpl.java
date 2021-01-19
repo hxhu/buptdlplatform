@@ -13,10 +13,15 @@ import com.bupt.dlplatform.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import ch.ethz.ssh2.Connection;
+import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -25,7 +30,15 @@ import java.util.*;
  */
 @Service
 @Slf4j
+@PropertySource(value = {"classpath:application-dev.yml" })
 public class ECaseServiceImpl implements ECaseService {
+    @Value("${ssd-server.host}")
+    private String ssdServerHost;
+    @Value("${ssd-server.username}")
+    private String ssdUsername;
+    @Value("${ssd-server.password}")
+    private String ssdPassword;
+
     @Autowired
     private IdGenerator idGenerator;
 
@@ -338,6 +351,11 @@ public class ECaseServiceImpl implements ECaseService {
                     break;
                 case 1:
                     // 执行环境准备脚本
+                    Connection conn = getSSDConnection();
+                    Session sess = getSSDSession(conn);
+                    sess.execCommand("touch bbb");
+                    conn.close();
+                    sess.close();
 
                     responseVO.setCode(ResponseCode.OK.value());
                     responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -641,4 +659,34 @@ public class ECaseServiceImpl implements ECaseService {
         }
     }
 
+
+    /**
+     * 连接服务器相关方法
+     */
+    public Connection getSSDConnection(){
+        Connection conn = null;
+        try{
+            conn = new Connection(ssdServerHost);
+            conn.connect();
+
+            boolean isAuthenticated = conn.authenticateWithPassword(ssdUsername, ssdPassword);
+            if (!isAuthenticated){
+                throw new IOException("Authentication failed.");
+            }
+        } catch ( IOException e ){
+            e.printStackTrace();
+        }
+        return conn;
+    }
+
+    public Session getSSDSession(Connection conn){
+        Session sess = null;
+        try{
+            sess = conn.openSession();
+        }catch ( IOException e){
+            e.printStackTrace();
+        }
+
+        return sess;
+    }
 }
