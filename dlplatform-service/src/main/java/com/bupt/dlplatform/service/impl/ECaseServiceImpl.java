@@ -22,7 +22,10 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -353,7 +356,10 @@ public class ECaseServiceImpl implements ECaseService {
                     // 执行环境准备脚本
                     Connection conn = getSSDConnection();
                     Session sess = getSSDSession(conn);
-                    sess.execCommand("touch bbb");
+
+                    sess.execCommand("cd caffe/data/VOC0712/ && bash caffe/data/VOC0712/create_list.sh && bash caffe/data/VOC0712/create_data.sh");
+                    printLog(sess);
+
                     conn.close();
                     sess.close();
 
@@ -688,5 +694,22 @@ public class ECaseServiceImpl implements ECaseService {
         }
 
         return sess;
+    }
+
+    public void printLog(Session sess){
+        InputStream stdout = new StreamGobbler(sess.getStdout());
+        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+        try{
+            while (true)
+            {
+                String line = br.readLine();
+                if (line == null)
+                    break;
+                System.out.println(line);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 }
