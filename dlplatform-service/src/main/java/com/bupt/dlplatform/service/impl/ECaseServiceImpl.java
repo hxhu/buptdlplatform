@@ -357,7 +357,7 @@ public class ECaseServiceImpl implements ECaseService {
                     Connection conn = getSSDConnection();
                     Session sess = getSSDSession(conn);
 
-                    sess.execCommand("cd caffe/data/VOC0712/ && bash caffe/data/VOC0712/create_list.sh && bash caffe/data/VOC0712/create_data.sh");
+                    sess.execCommand("python front.py prepareEnvironment");
                     printLog(sess);
 
                     conn.close();
@@ -417,6 +417,14 @@ public class ECaseServiceImpl implements ECaseService {
                     break;
                 case 1:
                     // 执行开始训练脚本
+                    Connection conn = getSSDConnection();
+                    Session sess = getSSDSession(conn);
+
+                    sess.execCommand("python front.py startTraining");
+                    printLog(sess);
+
+                    conn.close();
+                    sess.close();
 
                     responseVO.setCode(ResponseCode.OK.value());
                     responseVO.setMsg(ResponseCode.OK.getDescription());
