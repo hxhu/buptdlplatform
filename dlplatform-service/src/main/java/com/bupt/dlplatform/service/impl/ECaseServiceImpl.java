@@ -432,10 +432,10 @@ public class ECaseServiceImpl implements ECaseService {
                     break;
                 case 9:
                     /**
-                     * null     文件不存在
-                     * running  正在训练
-                     * success  训练成功
-                     * error    训练出错
+                     * null     文件不存在 0 
+                     * running  正在训练   1
+                     * success  训练成功   2
+                     * error    训练出错   3
                      */
                     // 查询训练结果  查看文件
                     responseVO.setCode(ResponseCode.OK.value());
@@ -480,11 +480,14 @@ public class ECaseServiceImpl implements ECaseService {
                     break;
                 case 9:
                     // 查询训练情况  查看文件
-                    TrainingConditionOutputVO trainingConditionOutputVO = new TrainingConditionOutputVO();
-                    trainingConditionOutputVO.setCurrentIteratorTimes(50000);
-                    trainingConditionOutputVO.setMaxIteratorTimes(120000);
-                    trainingConditionOutputVO.setCurrentAccuracy(79.34);
-                    trainingConditionOutputVO.setStatus("running");
+                    Connection conn = getSSDConnection();
+                    Session sess = getSSDSession(conn);
+
+                    sess.execCommand("python front.py getTrainingCondition");
+                    TrainingConditionOutputVO trainingConditionOutputVO = getCurCondition(sess);
+
+                    conn.close();
+                    sess.close();
 
                     responseVO.setCode(ResponseCode.OK.value());
                     responseVO.setMsg(ResponseCode.OK.getDescription());
@@ -718,5 +721,41 @@ public class ECaseServiceImpl implements ECaseService {
             e.printStackTrace();
         }
 
+    }
+
+    public TrainingConditionOutputVO getCurCondition(Session sess){
+        TrainingConditionOutputVO trainingConditionOutputVO = new TrainingConditionOutputVO();
+        InputStream stdout = new StreamGobbler(sess.getStdout());
+        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+        try{
+            String src = null;
+            while (true)
+            {
+                String tmp = br.readLine();
+                if (tmp == null)
+                    break;
+                else
+                    src = tmp;
+                System.out.println(src);
+            }
+
+            String[] list = src.substring(1,src.length()-1).split(", ");
+
+            Integer currentIteratorTimes = Integer.valueOf(list[0]);
+            Integer maxIteratorTimes = Integer.valueOf(list[1]);
+            Double currentAccuracy = Double.valueOf(list[2]) * 100;
+            String status = list[3].substring(2,list[3].length()-1);
+
+            trainingConditionOutputVO.setCurrentIteratorTimes(currentIteratorTimes);
+            trainingConditionOutputVO.setMaxIteratorTimes(maxIteratorTimes);
+            trainingConditionOutputVO.setCurrentAccuracy(currentAccuracy);
+            trainingConditionOutputVO.setStatus(status);
+
+            System.out.println(trainingConditionOutputVO.toString());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return trainingConditionOutputVO;
     }
 }
