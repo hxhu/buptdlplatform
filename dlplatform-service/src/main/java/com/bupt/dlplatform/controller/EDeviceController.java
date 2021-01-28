@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.controller;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.model.EDeviceEntity;
@@ -11,6 +12,8 @@ import com.bupt.dlplatform.vo.ELogInputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +34,14 @@ public class EDeviceController {
     @PostMapping("/create")
     public ResponseVO addEDevice(@RequestBody EDeviceInputVO request){
         return eDeviceService.addEDevice(request);
+    }
+
+    /**
+     * 批量增加设备
+     */
+    @PostMapping("/createDevices")
+    public R createDevices(@RequestParam(value = "avatar") MultipartFile avatar){
+        return eDeviceService.createDevices(avatar);
     }
 
     /**

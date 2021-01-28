@@ -1,5 +1,6 @@
 package com.bupt.dlplatform.service.impl;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EDeviceRepository;
@@ -18,7 +19,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -85,6 +88,40 @@ public class EDeviceServiceImpl implements EDeviceService {
             log.error("EDevice新建异常", e);
             return responseVO;
         }
+    }
+
+
+    /**
+     * 批量增加设备
+     */
+    public R createDevices(MultipartFile avatar){
+        Map<String,Object> map = new HashMap<>();
+        String type = avatar.getContentType().split("/")[0];
+
+        if (avatar.isEmpty()) {
+            return R.failed("failed");
+        } else if ( !type.equals("text") && !type.equals("application") ){
+            return R.failed("文件类型错误 " + type);
+        } else {
+            try (InputStream inputStream = avatar.getInputStream()) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    String devName = line.split(",")[0];
+                    String devId = line.split(",")[1];
+
+                    EDeviceInputVO eDeviceInputVO = new EDeviceInputVO(devId, devName);
+                    ResponseVO responseVO = addEDevice(eDeviceInputVO);
+                    if( responseVO.getCode() != 2000 ){
+                        System.out.println("批量添加出错： " + devName + "  " + devId );
+                    }
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return R.ok(map).setCode(2000);
     }
 
     /**

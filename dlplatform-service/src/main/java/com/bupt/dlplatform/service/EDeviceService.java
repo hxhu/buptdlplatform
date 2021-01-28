@@ -1,6 +1,10 @@
 package com.bupt.dlplatform.service;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.bupt.dlplatform.vo.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,6 +17,11 @@ public interface EDeviceService {
      * @return
      */
     public ResponseVO addEDevice(EDeviceInputVO eDeviceInputVO);
+
+    /**
+     * 批量增加设备
+     */
+    public R createDevices(MultipartFile avatar);
 
     /**
      * 修改设备
