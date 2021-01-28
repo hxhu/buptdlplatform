@@ -46,7 +46,7 @@ public class EDeviceOutputVO {
         this.videoRtsp = eDeviceEntity.getVideoRtsp();
         this.videoMessage = eDeviceEntity.getVideoMessage();
         this.currentModelId = eDeviceEntity.getCurrentModelId();
-        this.eModelOutputVO = new EModelOutputVO(eModelEntity);
+        this.eModelOutputVO = eModelEntity != null ? new EModelOutputVO(eModelEntity) : null;
 
         Set<EFileOutputVO> set = new HashSet<EFileOutputVO>();
         for( EFileEntity eFileEntity: fileSet ){

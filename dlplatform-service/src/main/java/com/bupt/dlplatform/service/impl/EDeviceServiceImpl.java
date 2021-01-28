@@ -325,13 +325,14 @@ public class EDeviceServiceImpl implements EDeviceService {
             List<EDeviceOutputVO> result = new ArrayList<EDeviceOutputVO>();
 
             for (EDeviceEntity eDeviceEntity : list) {
-                EModelEntity eModelEntity;
-                Optional<EModelEntity> optModel = eModelRepository.findById(eDeviceEntity.getCurrentModelId());
-                if (optModel.isPresent() && optModel.get().getIsDeleted() == 0) {
-                    eModelEntity = optModel.get();
-                } else {
-                    throw new ServiceException("未找到响应模型");
+                EModelEntity eModelEntity = null;
+                if( eDeviceEntity.getCurrentModelId() != null && eDeviceEntity.getCurrentModelId() != "" ){
+                    Optional<EModelEntity> optModel = eModelRepository.findById(eDeviceEntity.getCurrentModelId());
+                    if (optModel.isPresent() && optModel.get().getIsDeleted() == 0) {
+                        eModelEntity = optModel.get();
+                    }
                 }
+
 
                 Set<EFileEntity> fileSet = new HashSet<EFileEntity>();
                 if (eDeviceEntity.getCurrentFileIdSet() != null) {
