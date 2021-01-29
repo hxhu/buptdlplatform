@@ -26,6 +26,9 @@ public class ConstantProperties {
     @Value("${dataset.vocTxtPath}")
     private String vocTxtPath;
 
+    @Value("${dataset.testRootPath}")
+    private String testRootPath;
+
     public String getRootPath() {
         return rootPath;
     }
@@ -64,5 +67,13 @@ public class ConstantProperties {
 
     public void setVocTxtPath(String vocTxtPath) {
         this.vocTxtPath = vocTxtPath;
+    }
+
+    public String getTestRootPath() {
+        return testRootPath;
+    }
+
+    public void setTestRootPath(String testRootPath) {
+        this.testRootPath = testRootPath;
     }
 }

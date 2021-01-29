@@ -102,6 +102,7 @@ dataset:
   vocXMLPath: \\Annotations\\
   vocLabelPath: \\ImageSets\\
   vocTxtPath: Main\\
+  testRootPath: D:\\dataset\\test\\
 
 ssd-server:
   host: 10.112.140.101

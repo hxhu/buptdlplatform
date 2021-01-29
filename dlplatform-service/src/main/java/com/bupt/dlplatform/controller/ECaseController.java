@@ -115,15 +115,15 @@ public class ECaseController {
     }
 
     /**
-     * 5.训练结果
+     * 5.训练损失
      *
      * 0-未编辑状态 9-返回lossList
      * @return
      */
-    @GetMapping("/getTrainingResult")
-    public ResponseVO getTrainingResult(@RequestParam(value = "caseId")String caseId,
+    @GetMapping("/getTrainingLoss")
+    public ResponseVO getTrainingLoss(@RequestParam(value = "caseId")String caseId,
                                         @RequestParam(value = "status")Integer status){
-        return eCaseService.getTrainingResult(caseId, status);
+        return eCaseService.getTrainingLoss(caseId, status);
     }
 
     /**
@@ -132,10 +132,10 @@ public class ECaseController {
      * 0-未编辑状态 1-上传模型 9-查看是否上传
      * @return
      */
-    @PostMapping("/testModel")
-    public R testModel(@RequestParam(value = "caseId")String caseId,
-                       @RequestParam(value = "avatar") MultipartFile avatar,
-                       @RequestParam(value = "status")Integer status){
+    @PostMapping("/testModel/{caseId}/{status}")
+    public R testModel(@RequestParam(value = "avatar") MultipartFile avatar,
+                       @PathVariable(value = "caseId") String caseId,
+                       @PathVariable(value = "status") Integer status){
         return eCaseService.testModel(caseId, avatar, status);
     }
 

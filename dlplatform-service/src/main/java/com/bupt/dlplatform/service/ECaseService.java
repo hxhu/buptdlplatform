@@ -77,12 +77,12 @@ public interface ECaseService {
     public ResponseVO getTrainingCondition(String caseId, Integer status);
 
     /**
-     * 5.训练结果
+     * 5.训练损失
      *
      * 0-未编辑状态 9-返回lossList
      * @return
      */
-    public ResponseVO getTrainingResult(String caseId, Integer status);
+    public ResponseVO getTrainingLoss(String caseId, Integer status);
 
     /**
      * 6.模型测试

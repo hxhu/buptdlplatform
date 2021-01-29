@@ -7,6 +7,7 @@ import com.bupt.dlplatform.mapper.ECaseRepository;
 import com.bupt.dlplatform.mapper.EDataSetRepository;
 import com.bupt.dlplatform.model.ECaseEntity;
 import com.bupt.dlplatform.model.EDataSetEntity;
+import com.bupt.dlplatform.model.common.ConstantProperties;
 import com.bupt.dlplatform.service.ECaseService;
 import com.bupt.dlplatform.util.IdGenerator;
 import com.bupt.dlplatform.vo.*;
@@ -22,10 +23,7 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -41,6 +39,9 @@ public class ECaseServiceImpl implements ECaseService {
     private String ssdUsername;
     @Value("${ssd-server.password}")
     private String ssdPassword;
+
+    @Autowired
+    private ConstantProperties constantProperties;
 
     @Autowired
     private IdGenerator idGenerator;
@@ -506,12 +507,12 @@ public class ECaseServiceImpl implements ECaseService {
     }
 
     /**
-     * 5.训练结果
+     * 5.训练损失
      *
      * 0-未编辑状态 9-返回lossList
      * @return
      */
-    public ResponseVO<List<HashMap<String, Object>>> getTrainingResult(String caseId, Integer status){
+    public ResponseVO<List<HashMap<String, Object>>> getTrainingLoss(String caseId, Integer status){
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -531,18 +532,18 @@ public class ECaseServiceImpl implements ECaseService {
                     break;
                 case 9:
                     // 读取文件  获取实时loss list
+                    Connection conn = getSSDConnection();
+                    Session sess = getSSDSession(conn);
 
-                    List<HashMap<String, Object>> lossList = new ArrayList<HashMap<String, Object>>();
-                    for( int i = 10000; i <= 120000; i+=10000 ){
-                        HashMap<String, Object> hashMap = new HashMap<String, Object>();
-                        hashMap.put("iterator", i);
-                        hashMap.put("loss", 0.573);
-                        lossList.add(hashMap);
-                    }
+                    sess.execCommand("python front.py getTrainingLoss");
+                    List<HashMap<String, Object>> result = getTrainingLoss(sess);
+
+                    conn.close();
+                    sess.close();
 
                     responseVO.setCode(ResponseCode.OK.value());
                     responseVO.setMsg(ResponseCode.OK.getDescription());
-                    responseVO.setData(lossList);
+                    responseVO.setData(result);
                     break;
             }
 
@@ -587,16 +588,17 @@ public class ECaseServiceImpl implements ECaseService {
                     } else if ( !type.equals("png") && !type.equals("jpg") && !type.equals("jpeg") ){
                         return R.failed("图片类型错误 " + type);
                     } else {
-//                        String dirPath = constantProperties.getRootPath() + dataSetId + constantProperties.getVocJPGPath();
-//                        String filePath = dirPath + avatar.getOriginalFilename();
-//                        File newFile = new File(filePath);
-//                        try {
-//                            avatar.transferTo(newFile);
-//                        } catch (IllegalStateException | IOException e) {
-//                            e.printStackTrace();
-//                        }
+                        String dirPath = constantProperties.getTestRootPath();
+                        String filePath = dirPath + "case_" + caseId + "_" + avatar.getOriginalFilename();
+                        System.out.println(filePath);
+                        File newFile = new File(filePath);
+                        try {
+                            avatar.transferTo(newFile);
+                        } catch (IllegalStateException | IOException e) {
+                            e.printStackTrace();
+                        }
 
-                        System.out.println("上传图片：");
+                        System.out.println("上传测试图片：");
                     }
 
                     return R.ok(map).setCode(2000);
@@ -757,5 +759,35 @@ public class ECaseServiceImpl implements ECaseService {
         }
 
         return trainingConditionOutputVO;
+    }
+
+    public List<HashMap<String, Object>> getTrainingLoss(Session sess){
+        List<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
+        InputStream stdout = new StreamGobbler(sess.getStdout());
+        BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
+
+        try{
+            while (true)
+            {
+                String line = br.readLine();
+                if (line == null)
+                    break;
+                String[] couple = line.split(";");
+                for( int i = 0; i < couple.length; i++ ){
+                    Integer iterator = Integer.valueOf( couple[i].split(",")[0] );
+                    Double loss = Double.valueOf( couple[i].split(",")[1] );
+
+                    HashMap<String, Object> hashMap = new HashMap<String, Object>();
+                    hashMap.put("iterator",iterator);
+                    hashMap.put("loss",loss);
+
+                    result.add(hashMap);
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
