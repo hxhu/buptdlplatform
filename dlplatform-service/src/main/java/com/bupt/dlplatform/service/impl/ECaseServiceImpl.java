@@ -649,12 +649,6 @@ public class ECaseServiceImpl implements ECaseService {
                     responseVO.setMsg(ResponseCode.UNEDITALBE.getDescription());
                     responseVO.setData("训练结果空状态");
                     break;
-                case 1:
-                    // 脚本执行测试
-                    responseVO.setCode(ResponseCode.OK.value());
-                    responseVO.setMsg(ResponseCode.OK.getDescription());
-                    responseVO.setData("OK");
-                    break;
                 case 9:
                     // 查询测试情况
                     /**
@@ -662,9 +656,13 @@ public class ECaseServiceImpl implements ECaseService {
                      * {path}  执行成功
                      * error   执行失败
                      */
+                    String path = "http://10.112.140.101:9090/result/";
+                    String file = "Case" + caseId + ".jpg";
+                    String result = path + file;
+
                     responseVO.setCode(ResponseCode.OK.value());
                     responseVO.setMsg(ResponseCode.OK.getDescription());
-                    responseVO.setData("{path}");
+                    responseVO.setData(result);
                     break;
             }
 
