@@ -81,11 +81,16 @@ public class PushCallback implements MqttCallback {
 
             switch (messageType) {
                 case "heartbeat":    // 心跳上传
+                    String extra = upEntity.getExtra().toString();
+                    String targets = extra.substring(8,extra.length()-1);
+
+                    System.out.println(message);
                     if (dlPlatformService.updateERHeartbeat(
                             upEntity.getDeviceId(),
                             upEntity.getMessage(),
                             upEntity.getData(),      // "0" , "1", "2"
-                            upEntity.getTimestamp()
+                            upEntity.getTimestamp(),
+                            targets
                     ).equals("OK")) {
                         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
                         System.out.println(df.format(new Date()) + " 心跳上传成功");

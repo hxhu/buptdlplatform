@@ -62,7 +62,7 @@ public class EModelController {
      * @return
      */
     @DeleteMapping("/delete")
-    public ResponseVO deleteEModel(String modelId){
+    public ResponseVO deleteEModel(@RequestParam(value = "modelId")String modelId){
         return eModelService.deleteEModel(modelId);
     }
 

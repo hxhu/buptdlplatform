@@ -1,11 +1,14 @@
 package com.bupt.dlplatform.service.impl;
 
+import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.bupt.dlplatform.data.ResponseCode;
 import com.bupt.dlplatform.exception.ServiceException;
 import com.bupt.dlplatform.mapper.EConfigRepository;
+import com.bupt.dlplatform.mapper.EDeviceRepository;
 import com.bupt.dlplatform.model.EConfigEntity;
 import com.bupt.dlplatform.model.EDataSetEntity;
 import com.bupt.dlplatform.model.EDeviceEntity;
+import com.bupt.dlplatform.rpc.MQTTService;
 import com.bupt.dlplatform.service.EConfigService;
 import com.bupt.dlplatform.service.ELogService;
 import com.bupt.dlplatform.util.IdGenerator;
@@ -30,14 +33,20 @@ public class EConfigServiceImpl implements EConfigService {
     private EConfigRepository eConfigRepository;
 
     @Autowired
+    private EDeviceRepository eDeviceRepository;
+
+    @Autowired
     private ELogService eLogService;
+
+    private volatile ConsumerConfig<MQTTService> consumerConfig = null;
+    private MQTTService mqttService = null;
 
     /**
      * 增加配置
      *
      * @return
      */
-    public ResponseVO addEConfig(EConfigInputVO eConfigInputVO){
+    public ResponseVO addEConfig(EConfigInputVO eConfigInputVO) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -68,7 +77,7 @@ public class EConfigServiceImpl implements EConfigService {
      *
      * @return
      */
-    public ResponseVO updateEConfig(EConfigInputVO eConfigInputVO){
+    public ResponseVO updateEConfig(EConfigInputVO eConfigInputVO) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -112,9 +121,10 @@ public class EConfigServiceImpl implements EConfigService {
 
     /**
      * 查询配置列表
+     *
      * @return
      */
-    public ResponseVO<List<EConfigOutputVO>> getEConfigList(){
+    public ResponseVO<List<EConfigOutputVO>> getEConfigList() {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -148,7 +158,7 @@ public class EConfigServiceImpl implements EConfigService {
      *
      * @return
      */
-    public ResponseVO<EConfigOutputVO> getEConfig(String configId){
+    public ResponseVO<EConfigOutputVO> getEConfig(String configId) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -179,7 +189,7 @@ public class EConfigServiceImpl implements EConfigService {
      *
      * @return
      */
-    public ResponseVO deleteEConfig(String configId){
+    public ResponseVO deleteEConfig(String configId) {
         ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
 
         try {
@@ -205,6 +215,75 @@ public class EConfigServiceImpl implements EConfigService {
             return responseVO;
         } catch (Exception e) {
             log.error("EConfig删除异常", e);
+            return responseVO;
+        }
+    }
+
+    /**
+     * 推送配置到设备
+     *
+     * @return
+     */
+    public ResponseVO pushDownConfigs(EConfigDownInputVO eConfigDownInputVO) {
+        ResponseVO responseVO = new ResponseVO(ResponseCode.SYSTEM_EXCEPTION);
+
+        try {
+            EConfigEntity eConfigEntity;
+            HashMap<String, Object> resultConfigs;
+            Optional<EConfigEntity> opt = eConfigRepository.findById(eConfigDownInputVO.getConfigId());
+            if (opt.isPresent() && opt.get().getIsDeleted() == 0) {
+                eConfigEntity = opt.get();
+                resultConfigs = eConfigEntity.getConfigs();
+            } else {
+                throw new ServiceException("未找到该数据");
+            }
+
+            ArrayList<String> deviceIds = eConfigDownInputVO.getDeviceIds();
+            ArrayList<String> resultDeviceIds = new ArrayList<String>();
+            for (String id : deviceIds) {
+                Optional<EDeviceEntity> optIds = eDeviceRepository.findById(id);
+                if ( optIds.isPresent() && optIds.get().getIsDeleted() == 0 ) {
+                    resultDeviceIds.add(id);
+                } else {
+                    throw new ServiceException("未找到该数据");
+                }
+            }
+
+            // resultConfigs
+            // resultDeviceIds
+            // 双重检验锁
+            if (mqttService == null) {
+                synchronized (MQTTService.class) {
+                    if (mqttService == null) {
+                        // PRC调用服务
+                        consumerConfig = new ConsumerConfig<MQTTService>()
+                                .setInterfaceId(MQTTService.class.getName()) // 指定接口
+                                .setProtocol("bolt") // 指定协议
+                                .setDirectUrl("bolt://127.0.0.1:12400"); // 指定直连地址
+                        // 生成代理类
+                        mqttService = consumerConfig.refer();
+                    }
+                }
+            }
+
+            if (mqttService.pushConfig(
+                    resultConfigs,
+                    resultDeviceIds
+            ).equals("ERROR")) {
+                new ServiceException("发送数据失败");
+            }
+
+
+            responseVO.setCode(ResponseCode.OK.value());
+            responseVO.setMsg(ResponseCode.OK.getDescription());
+            responseVO.setData("OK");
+            return responseVO;
+
+        } catch (ServiceException e) {
+            log.error("EConfig推送异常", e);
+            return responseVO;
+        } catch (Exception e) {
+            log.error("EConfig推送异常", e);
             return responseVO;
         }
     }

@@ -71,7 +71,7 @@ public class DLPlatformServiceImpl implements DLPlatformService {
     }
 
     @Override
-    public String updateERHeartbeat( String deviceId, String type, String status, Long timestamp ){
+    public String updateERHeartbeat( String deviceId, String type, String status, Long timestamp, String targets ){
         try{
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
@@ -85,6 +85,7 @@ public class DLPlatformServiceImpl implements DLPlatformService {
             erHeartbeatInputVO.setType(type);
             erHeartbeatInputVO.setStatus(status);
             erHeartbeatInputVO.setTimestamp(timestamp);
+            erHeartbeatInputVO.setTargets(targets);
 
             JSONObject body = JSONObject.fromObject(erHeartbeatInputVO);
             HttpEntity<String> formEntity = new HttpEntity<String>(body.toString(), headers);

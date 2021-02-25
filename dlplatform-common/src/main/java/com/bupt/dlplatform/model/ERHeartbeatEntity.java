@@ -3,6 +3,7 @@ package com.bupt.dlplatform.model;
 import com.bupt.dlplatform.vo.ERHeartbeatInputVO;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +24,14 @@ public class ERHeartbeatEntity {
 
     private Long timestamp;
 
+    private String targets;
+
     public ERHeartbeatEntity(ERHeartbeatInputVO erHeartbeatInputVO){
         this.deviceId  = erHeartbeatInputVO.getDeviceId();
         this.type = erHeartbeatInputVO.getType();
         this.status = erHeartbeatInputVO.getStatus();
         this.timestamp = erHeartbeatInputVO.getTimestamp();
+        this.targets = erHeartbeatInputVO.getTargets();
     }
 
     public ERHeartbeatEntity(Map<String, Object> map){
@@ -35,6 +39,7 @@ public class ERHeartbeatEntity {
         this.type = (String)map.get("type");
         this.status = (String)map.get("status");
         this.timestamp = Long.parseLong( (String)map.get("timestamp") );
+        this.targets  = (String)map.get("targets");
     }
 
     public Map<String, Object> turn2Map(){
@@ -43,6 +48,7 @@ public class ERHeartbeatEntity {
         map.put("type", this.type);
         map.put("status", this.status);
         map.put("timestamp", this.timestamp.toString());
+        map.put("targets", this.targets);
 
         return map;
     }

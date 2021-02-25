@@ -62,6 +62,8 @@ public class ClientMQTT { // 上传 up
         }
     }
 
+
+    // MQTT接收端
     public static void main(String[] args) throws MqttException {
         ClientMQTT client = new ClientMQTT();
         client.start();

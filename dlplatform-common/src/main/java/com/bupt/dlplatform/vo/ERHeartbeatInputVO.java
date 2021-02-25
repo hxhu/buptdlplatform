@@ -19,4 +19,6 @@ public class ERHeartbeatInputVO {
     private String status; //data 0, 1, 2
 
     private Long timestamp;
+
+    private String targets = "";
 }

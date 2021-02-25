@@ -19,6 +19,8 @@ public class UpEntity {
     private String data; // modelId
 
     private Long timestamp;
+
+    private Object extra = null;
 }
 
 /*

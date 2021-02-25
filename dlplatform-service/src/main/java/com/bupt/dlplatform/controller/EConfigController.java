@@ -2,6 +2,7 @@ package com.bupt.dlplatform.controller;
 
 import com.bupt.dlplatform.service.EConfigService;
 import com.bupt.dlplatform.service.EDeviceService;
+import com.bupt.dlplatform.vo.EConfigDownInputVO;
 import com.bupt.dlplatform.vo.EConfigInputVO;
 import com.bupt.dlplatform.vo.EConfigOutputVO;
 import com.bupt.dlplatform.vo.ResponseVO;
@@ -68,5 +69,16 @@ public class EConfigController {
     @DeleteMapping("/delete")
     public ResponseVO deleteEConfig(@RequestParam(value = "configId")String configId){
         return eConfigService.deleteEConfig(configId);
+    }
+
+
+    /**
+     * 推送配置到设备
+     *
+     * @return
+     */
+    @PostMapping("/pushDownConfigs")
+    public ResponseVO pushDownConfigs(@RequestBody EConfigDownInputVO eConfigDownInputVO){
+        return eConfigService.pushDownConfigs(eConfigDownInputVO);
     }
 }
