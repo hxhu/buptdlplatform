@@ -22,7 +22,7 @@ public class ELogEntity {
 
     private String deviceId;
 
-    private String type; // 设备1 2 3   模型-1 -2 -3   推送模型"-2,2"
+    private String type; // 设备1 2 3   模型-1 -2 -3  配置文件 -4、-5、-6。参数组 -7、-8、-9。   // 推送模型"-2,2"   推送配置文件"-5,2"   推送参数组"-8,2"
 
     private String message; // 操作详情
 
