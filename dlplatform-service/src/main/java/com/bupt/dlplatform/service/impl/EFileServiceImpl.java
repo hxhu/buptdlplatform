@@ -281,7 +281,8 @@ public class EFileServiceImpl implements EFileService {
                     pushFileInputVO.getDeviceIds(),
                     pushFileInputVO.getFileId(),
                     eFileEntity.getFileLocation(),
-                    pushFileInputVO.getType()).equals("ERROR") ){
+                    pushFileInputVO.getType(),
+                    pushFileInputVO.getParttern()).equals("ERROR") ){
                 new ServiceException("发送数据失败");
             }
 

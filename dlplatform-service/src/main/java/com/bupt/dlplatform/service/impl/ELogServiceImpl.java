@@ -177,12 +177,14 @@ public class ELogServiceImpl implements ELogService {
                     throw new ServiceException("未找到相应模型");
                 }
 
-                EDeviceEntity eDeviceEntity;
-                Optional<EDeviceEntity> optDevice = eDeviceRepository.findById(eLogEntity.getDeviceId());
-                if (optDevice.isPresent() && optDevice.get().getIsDeleted() == 0) {
-                    eDeviceEntity = optDevice.get();
-                } else {
-                    throw new ServiceException("未找到相应设备");
+                EDeviceEntity eDeviceEntity = new EDeviceEntity();
+                if( eLogEntity.getDeviceId() != null && !eLogEntity.getDeviceId().equals("") ){
+                    Optional<EDeviceEntity> optDevice = eDeviceRepository.findById(eLogEntity.getDeviceId());
+                    if (optDevice.isPresent() && optDevice.get().getIsDeleted() == 0) {
+                        eDeviceEntity = optDevice.get();
+                    } else {
+                        throw new ServiceException("未找到相应设备");
+                    }
                 }
 
                 result.add(new ELogOutputVO(eLogEntity, eModelEntity, eDeviceEntity));
@@ -219,13 +221,17 @@ public class ELogServiceImpl implements ELogService {
             List<ELogOutputVO> result = new ArrayList<ELogOutputVO>();
 
             for (ELogEntity eLogEntity : list) {
-                EModelEntity eModelEntity;
-                Optional<EModelEntity> optModel = eModelRepository.findById(eLogEntity.getModelId());
-                if (optModel.isPresent() && optModel.get().getIsDeleted() == 0) {
-                    eModelEntity = optModel.get();
-                } else {
-                    throw new ServiceException("未找到相应模型");
+                EModelEntity eModelEntity = new EModelEntity();
+                if( eLogEntity.getModelId() != null && !eLogEntity.getModelId().equals("") ){
+                    Optional<EModelEntity> optModel = eModelRepository.findById(eLogEntity.getModelId());
+                    System.out.println(eLogEntity.getModelId());
+                    if (optModel.isPresent() && optModel.get().getIsDeleted() == 0) {
+                        eModelEntity = optModel.get();
+                    } else {
+                        throw new ServiceException("未找到相应模型");
+                    }
                 }
+
 
                 EDeviceEntity eDeviceEntity;
                 Optional<EDeviceEntity> optDevice = eDeviceRepository.findById(eLogEntity.getDeviceId());

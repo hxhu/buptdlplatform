@@ -19,4 +19,6 @@ public class PushModelInputVO {
     private String modelId;
 
     private String type; // points  boardcast
+
+    private String parttern;
 }

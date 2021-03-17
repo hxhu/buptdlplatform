@@ -268,7 +268,8 @@ public class EConfigServiceImpl implements EConfigService {
 
             if (mqttService.pushConfig(
                     resultConfigs,
-                    resultDeviceIds
+                    resultDeviceIds,
+                    eConfigDownInputVO.getParttern()
             ).equals("ERROR")) {
                 new ServiceException("发送数据失败");
             }

@@ -26,7 +26,7 @@ public class ERHeartbeatEntity {
 
     private String targets;
 
-    public ERHeartbeatEntity(ERHeartbeatInputVO erHeartbeatInputVO){
+   public ERHeartbeatEntity(ERHeartbeatInputVO erHeartbeatInputVO){
         this.deviceId  = erHeartbeatInputVO.getDeviceId();
         this.type = erHeartbeatInputVO.getType();
         this.status = erHeartbeatInputVO.getStatus();

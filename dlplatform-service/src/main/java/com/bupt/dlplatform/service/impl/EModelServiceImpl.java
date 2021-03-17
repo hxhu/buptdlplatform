@@ -286,11 +286,13 @@ public class EModelServiceImpl implements EModelService {
                 }
             }
 
+            System.out.println(pushModelInputVO.getParttern());
             if( mqttService.pushModel(
                     pushModelInputVO.getDeviceIds(),
                     pushModelInputVO.getModelId(),
                     eModelEntity.getModelLocation(),
-                    pushModelInputVO.getType()).equals("ERROR") ){
+                    pushModelInputVO.getType(),
+                    pushModelInputVO.getParttern()).equals("ERROR") ){
                 new ServiceException("发送数据失败");
             }
 

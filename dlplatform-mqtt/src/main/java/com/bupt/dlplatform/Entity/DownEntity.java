@@ -2,6 +2,7 @@ package com.bupt.dlplatform.Entity;
 
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,4 +22,6 @@ public class DownEntity {
     private List<String> target; // "null"  "xxx,yyy,zzz"
 
     private Long timestamp;
+
+    private HashMap<String, Object> extra;
 }

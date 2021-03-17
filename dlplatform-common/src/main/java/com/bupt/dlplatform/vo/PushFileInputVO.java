@@ -19,4 +19,6 @@ public class PushFileInputVO {
     private String fileId;
 
     private String type;
+
+    private String parttern;
 }

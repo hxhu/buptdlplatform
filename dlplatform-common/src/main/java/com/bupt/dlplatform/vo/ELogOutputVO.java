@@ -1,9 +1,13 @@
 package com.bupt.dlplatform.vo;
 
 import com.bupt.dlplatform.model.EDeviceEntity;
+import com.bupt.dlplatform.model.EFileEntity;
 import com.bupt.dlplatform.model.ELogEntity;
 import com.bupt.dlplatform.model.EModelEntity;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by huhx on 2020/12/15
@@ -40,6 +44,6 @@ public class ELogOutputVO {
         this.timestamp = eLogEntity.getTimestamp();
 
         this.eModelOutputVO = new EModelOutputVO(eModelEntity);
-        this.eDeviceOutputVO = new EDeviceOutputVO(eDeviceEntity, eModelEntity,null);
+        this.eDeviceOutputVO = new EDeviceOutputVO(eDeviceEntity, eModelEntity, new HashSet<EFileEntity>());
     }
 }

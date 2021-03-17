@@ -17,4 +17,6 @@ public class EConfigDownInputVO {
     private String configId;
 
     private ArrayList<String> deviceIds;
+
+    private String parttern;
 }

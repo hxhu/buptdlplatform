@@ -8,9 +8,9 @@ import java.util.List;
  * Created by huhx on 2020/12/6
  */
 public interface MQTTService {
-    public String pushModel(List<String> deviceIds, String modelId, String modelLocation, String type);
+    public String pushModel(List<String> deviceIds, String modelId, String modelLocation, String type, String parttern);
 
-    public String fileModel(List<String> deviceIds, String fileId, String fileLocation, String type);
+    public String fileModel(List<String> deviceIds, String fileId, String fileLocation, String type, String parttern);
 
-    public String pushConfig(HashMap<String,Object> resultConfigs, ArrayList<String> resultDeviceIds);
+    public String pushConfig(HashMap<String,Object> resultConfigs, ArrayList<String> resultDeviceIds, String parttern);
 }
